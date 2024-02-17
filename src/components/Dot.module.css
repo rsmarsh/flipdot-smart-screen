@@ -2,9 +2,18 @@
   display: inline-block;
   width: var(--cell-size);
   height: var(--cell-size);
-  border: 1px solid gray;
+  margin: 1px;
   white-space: nowrap;
   background-color: black;
+
+  /* Hexagon clip-path */
+  --o: calc(50% * tan(-22.5deg));
+  clip-path: polygon(
+    var(--o) 50%,
+    50% var(--o),
+    calc(100% - var(--o)) 50%,
+    50% calc(100% - var(--o))
+  );
 }
 
 .active {
