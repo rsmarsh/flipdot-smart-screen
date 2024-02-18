@@ -1,44 +1,34 @@
 import styles from './Emulator.module.css';
 import Dot from './Dot';
+import type { DotMatrix } from '@/types/flipdot';
 
-interface DotData {
-  col: number;
-  row: number;
+interface EmulatorProps {
+  width: number;
+  height: number;
+  matrix: DotMatrix;
 }
 
-const Emulator = () => {
-  const gridWidth = 96;
-  const gridHeight = 16;
-
-  const rows: DotData[][] = [];
-
-  for (let row = 0; row < gridHeight; row++) {
-    const newRow: DotData[] = [];
-
-    for (let col = 0; col < gridWidth; col++) {
-      newRow.push({ col: col, row: row });
-    }
-
-    rows.push(newRow);
-  }
+const Emulator = (props: EmulatorProps) => {
+  const gridWidth = props.width;
+  const gridHeight = props.height;
 
   return (
     <div>
       <div className={styles.frame}>
-        {rows.map((row, rowIndex) => {
-          return (
-            <div key={rowIndex} className={styles.row}>
-              {row.map((dot) => (
-                <Dot
-                  key={`${dot.row}${dot.col}`}
-                  row={dot.row}
-                  col={dot.col}
-                  isActive={Math.random() > 0.5}
-                />
-              ))}
-            </div>
-          );
-        })}
+        {Object.keys(props.matrix).map((rowNum) => (
+          <div key={rowNum}>
+            {Object.keys(props.matrix[rowNum]).map((colNum) => (
+              <Dot
+                key={`${rowNum}-${colNum}`}
+                col={colNum}
+                row={rowNum}
+                lit={props.matrix[rowNum][colNum].lit}
+                data-col={colNum}
+                data-row={rowNum}
+              />
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );
