@@ -2,6 +2,7 @@
 
 import type { DotMatrix } from '@/types/flipdot';
 import { useState } from 'react';
+import { applyArrayToMatrix } from '@/utils/display';
 
 interface ControlProps {
   setMatrix: (matrix: DotMatrix) => void;
@@ -12,12 +13,17 @@ const TextToFont = (props: ControlProps) => {
 
   const onSubmit = async () => {
     const urlParams = new URLSearchParams({
-      text: message
+      message: message
     });
 
-    const fontRes = await fetch('/api/text?' + urlParams);
-    console.log(fontRes);
+    const textRes = await fetch('/api/text?' + urlParams);
+    const resJSON = await textRes.json();
+
+    const matrixWithText = applyArrayToMatrix(resJSON.matrix);
+
+    props.setMatrix(matrixWithText);
   };
+
   return (
     <div>
       <input

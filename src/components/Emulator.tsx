@@ -16,7 +16,7 @@ const Emulator = (props: EmulatorProps) => {
     <div>
       <div className={styles.frame}>
         {Object.keys(props.matrix).map((rowNum) => (
-          <div key={rowNum}>
+          <div key={rowNum} className={styles.row}>
             {Object.keys(props.matrix[rowNum]).map((colNum) => (
               <Dot
                 key={`${rowNum}-${colNum}`}
