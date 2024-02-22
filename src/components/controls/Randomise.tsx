@@ -2,6 +2,7 @@
 
 import type { DotMatrix } from '@/types/flipdot';
 import { randomMatrix } from '@/utils/display';
+import Button from '@/components/inputs/Button';
 import SIZE from '@/config/size';
 
 interface ControlProps {
@@ -16,7 +17,7 @@ const Randomise = (props: ControlProps) => {
 
   return (
     <div>
-      <button onClick={handleClick}>Randomise Screen</button>
+      <Button onClick={handleClick}>Randomise Screen</Button>
     </div>
   );
 };

@@ -1,11 +1,12 @@
 import path from 'path';
 import fs from 'fs';
-import figlet, { Fonts } from 'figlet';
+import figlet, { type Fonts } from 'figlet';
 import SIZE from '@/config/size';
 
 // A growing list of fonts worth using
-const goodFontList = ['Banner', 'Doh'];
+const goodFontList: Fonts[] = ['Banner', 'Doh'];
 const DEFAULT_FONT = 'Banner';
+const fontsLoaded: string[] = [];
 
 /**
  * Loads the font into figlet before attempting to use it
@@ -22,7 +23,6 @@ export const getServerFont = (fontName: figlet.Fonts = DEFAULT_FONT) => {
     `./node_modules/figlet/fonts/${fontName}.flf`
   );
 
-  console.log(fontPath);
   const data = fs.readFileSync(fontPath, 'utf8');
 
   return data;
@@ -37,9 +37,15 @@ export const getAsciiFromText = (text: string, font?: Fonts) => {
   };
 
   const fontName = font || DEFAULT_FONT;
-  const fontData = getServerFont(DEFAULT_FONT);
-  figlet.parseFont(fontName, fontData);
 
+  // Only need to load each unique font once, then figlet can access it
+  if (!fontsLoaded.includes(fontName)) {
+    const fontData = getServerFont(DEFAULT_FONT);
+    figlet.parseFont(fontName, fontData);
+    fontsLoaded.push(fontName);
+  }
+
+  console.log('Fonts Loaded: ', fontsLoaded);
   console.log('converting text ', text);
 
   const ascii = figlet.textSync(text, { ...FONT_OPTIONS, font: fontName });

@@ -3,6 +3,7 @@
 import type { DotMatrix } from '@/types/flipdot';
 import { useState } from 'react';
 import { applyArrayToMatrix } from '@/utils/display';
+import TextInput from '@/components/inputs/TextInput';
 
 interface ControlProps {
   setMatrix: (matrix: DotMatrix) => void;
@@ -10,6 +11,7 @@ interface ControlProps {
 
 const TextToFont = (props: ControlProps) => {
   const [message, setMessage] = useState('');
+  const [liveUpdate, setLiveUpdate] = useState(false);
 
   const onSubmit = async () => {
     const urlParams = new URLSearchParams({
@@ -26,10 +28,10 @@ const TextToFont = (props: ControlProps) => {
 
   return (
     <div>
-      <input
+      <TextInput
+        label={'Message: '}
         value={message}
-        type='text'
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={(value: string) => setMessage(value)}
       />
       <button onClick={onSubmit}>Convert to font</button>
     </div>
