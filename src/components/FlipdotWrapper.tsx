@@ -10,6 +10,7 @@ import { emptyMatrix } from '@/utils/display';
 const FlipdotWrapper = () => {
   const initialMatrix = emptyMatrix(SIZE);
   const [matrix, setMatrix] = useState(initialMatrix);
+  const [centered, setCentered] = useState(false);
 
   return (
     <div>

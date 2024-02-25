@@ -1,4 +1,5 @@
 .frame {
+  max-width: 99vw;
   border: 1rem solid black;
   padding: 0.5rem;
   background-color: #3f3f3f;

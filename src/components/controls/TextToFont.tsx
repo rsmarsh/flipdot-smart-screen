@@ -14,7 +14,7 @@ interface ControlProps {
 
 const TextToFont = (props: ControlProps) => {
   const [message, setMessage] = useState('');
-  const [liveUpdate, setLiveUpdate] = useState(false);
+  const [liveUpdate, setLiveUpdate] = useState(true);
 
   const onMessageChange = (text: string) => {
     setMessage(text);
@@ -54,7 +54,7 @@ const TextToFont = (props: ControlProps) => {
       <div className={styles.submitWrapper}>
         <Button onClick={() => submitMessage(message)}>⬆️</Button>
       </div>
-      <div>
+      <div className={styles.liveInputWrapper}>
         <Checkbox
           label='Live update'
           onChange={setLiveUpdate}

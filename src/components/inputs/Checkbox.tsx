@@ -1,3 +1,5 @@
+import styles from './Checkbox.module.css';
+
 interface CheckboxProps {
   onChange: (checked: boolean) => void;
   checked: boolean;
@@ -6,10 +8,11 @@ interface CheckboxProps {
 
 const Checkbox = (props: CheckboxProps) => {
   return (
-    <div>
+    <div className={styles.checkboxWrapper}>
       {props.label}:
       <input
         type='checkbox'
+        className={styles.checkbox}
         checked={props.checked}
         onChange={(e) => props.onChange(e.currentTarget.checked)}
       />
