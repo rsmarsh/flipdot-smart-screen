@@ -39,7 +39,6 @@ export const randomMatrix = (size: SizeObject) => {
 
 export const applyArrayToMatrix = (dataArray: string[]) => {
   const matrix = emptyMatrix();
-  console.log(dataArray);
 
   // no point going higher or wider than the screen allows
   const rowMax = Math.min(SIZE.height, dataArray.length);

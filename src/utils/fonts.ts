@@ -40,12 +40,15 @@ export const getAsciiFromText = (text: string, font?: Fonts) => {
 
   // Only need to load each unique font once, then figlet can access it
   if (!fontsLoaded.includes(fontName)) {
+    console.log(`Loading new font '${fontName}'`);
+
     const fontData = getServerFont(DEFAULT_FONT);
     figlet.parseFont(fontName, fontData);
     fontsLoaded.push(fontName);
+
+    console.log('Fonts Loaded: ', fontsLoaded);
   }
 
-  console.log('Fonts Loaded: ', fontsLoaded);
   console.log('converting text ', text);
 
   const ascii = figlet.textSync(text, { ...FONT_OPTIONS, font: fontName });
@@ -56,9 +59,6 @@ export const getAsciiFromText = (text: string, font?: Fonts) => {
 
   // convert string to array at line breaks
   const asciiRows = parsedAscii.split('\n');
-
-  console.log('asciiRows:');
-  console.log(asciiRows);
 
   // get a matrix to fill
   // var mat = this.matrix(aart.length + offset[0], this.columns, invert);

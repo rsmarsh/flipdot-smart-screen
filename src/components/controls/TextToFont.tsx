@@ -2,8 +2,11 @@
 
 import type { DotMatrix } from '@/types/flipdot';
 import { useState } from 'react';
-import { applyArrayToMatrix } from '@/utils/display';
+import { applyArrayToMatrix, emptyMatrix } from '@/utils/display';
 import TextInput from '@/components/inputs/TextInput';
+import Button from '@/components/inputs/Button';
+import Checkbox from '@/components/inputs/Checkbox';
+import styles from './TextToFont.module.css';
 
 interface ControlProps {
   setMatrix: (matrix: DotMatrix) => void;
@@ -13,9 +16,22 @@ const TextToFont = (props: ControlProps) => {
   const [message, setMessage] = useState('');
   const [liveUpdate, setLiveUpdate] = useState(false);
 
-  const onSubmit = async () => {
+  const onMessageChange = (text: string) => {
+    setMessage(text);
+
+    if (liveUpdate) {
+      submitMessage(text);
+    }
+  };
+
+  const submitMessage = async (newMessage: string) => {
+    if (!newMessage) {
+      props.setMatrix(emptyMatrix());
+      return;
+    }
+
     const urlParams = new URLSearchParams({
-      message: message
+      message: newMessage
     });
 
     const textRes = await fetch('/api/text?' + urlParams);
@@ -27,13 +43,24 @@ const TextToFont = (props: ControlProps) => {
   };
 
   return (
-    <div>
-      <TextInput
-        label={'Message: '}
-        value={message}
-        onChange={(value: string) => setMessage(value)}
-      />
-      <button onClick={onSubmit}>Convert to font</button>
+    <div className={styles.textToFontWrapper}>
+      <div className={styles.textInputWrapper}>
+        <TextInput
+          label={'Message: '}
+          value={message}
+          onChange={onMessageChange}
+        />
+      </div>
+      <div className={styles.submitWrapper}>
+        <Button onClick={() => submitMessage(message)}>⬆️</Button>
+      </div>
+      <div>
+        <Checkbox
+          label='Live update'
+          onChange={setLiveUpdate}
+          checked={liveUpdate}
+        />
+      </div>
     </div>
   );
 };
