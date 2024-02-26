@@ -11,6 +11,8 @@
 .textInputWrapper {
   display: inline-block;
   vertical-align: middle;
+
+  max-width: 50vw;
 }
 
 .liveInputWrapper {

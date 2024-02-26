@@ -16,6 +16,15 @@
   );
 }
 
+@media (max-width: 1000px) {
+  .dot {
+    width: var(--cell-size-small);
+    height: var(--cell-size-small);
+
+    margin: 0;
+  }
+}
+
 .active {
   background-color: yellow;
 }

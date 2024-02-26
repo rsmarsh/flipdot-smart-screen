@@ -40,6 +40,7 @@
   --card-border-rgb: 131, 134, 135;
 
   --cell-size: 15px;
+  --cell-size-small: 5px;
 }
 
 @media (prefers-color-scheme: dark) {

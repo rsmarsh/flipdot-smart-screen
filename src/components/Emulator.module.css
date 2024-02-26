@@ -1,3 +1,9 @@
+.frameWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
 .frame {
   max-width: 99vw;
   border: 1rem solid black;
@@ -12,4 +18,15 @@
   white-space: nowrap;
   height: var(--cell-size);
   margin-bottom: 1px;
+}
+
+@media (max-width: 1200px) {
+  .row {
+    height: auto;
+  }
+
+  .frame {
+    border: 5px solid black;
+    padding: 0.1rem;
+  }
 }

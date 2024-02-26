@@ -13,7 +13,7 @@ const Emulator = (props: EmulatorProps) => {
   const gridHeight = props.height;
 
   return (
-    <div>
+    <div className={styles.frameWrapper}>
       <div className={styles.frame}>
         {Object.keys(props.matrix).map((rowNum) => (
           <div key={rowNum} className={styles.row}>

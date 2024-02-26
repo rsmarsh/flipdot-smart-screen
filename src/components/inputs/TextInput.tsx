@@ -2,7 +2,7 @@ import type { ChangeEvent } from 'react';
 import styles from './TextInput.module.css';
 
 interface TextInputProps {
-  label: string;
+  label?: string;
   value: string;
   onChange: (newText: string) => void;
 }

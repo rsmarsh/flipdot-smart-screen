@@ -45,11 +45,7 @@ const TextToFont = (props: ControlProps) => {
   return (
     <div className={styles.textToFontWrapper}>
       <div className={styles.textInputWrapper}>
-        <TextInput
-          label={'Message: '}
-          value={message}
-          onChange={onMessageChange}
-        />
+        <TextInput value={message} onChange={onMessageChange} />
       </div>
       <div className={styles.submitWrapper}>
         <Button onClick={() => submitMessage(message)}>⬆️</Button>
