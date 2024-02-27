@@ -1,11 +1,11 @@
-import path from 'path';
-import fs from 'fs';
-import figlet, { type Fonts } from 'figlet';
-import SIZE from '@/config/size';
+import path from "path";
+import fs from "fs";
+import figlet, { type Fonts } from "figlet";
+import SIZE from "@/config/size";
+import { fontList } from "@/utils/fontList";
 
 // A growing list of fonts worth using
-const goodFontList: Fonts[] = ['Banner', 'Doh'];
-const DEFAULT_FONT = 'Banner';
+const DEFAULT_FONT = "Banner";
 const fontsLoaded: string[] = [];
 
 /**
@@ -14,7 +14,7 @@ const fontsLoaded: string[] = [];
  */
 export const getServerFont = (fontName: figlet.Fonts = DEFAULT_FONT) => {
   // disallow unknown fonts and anyone trying to do bad things like path traversal
-  if (!goodFontList.includes(fontName)) {
+  if (!fontList.includes(fontName)) {
     fontName = DEFAULT_FONT;
   }
 
@@ -23,42 +23,42 @@ export const getServerFont = (fontName: figlet.Fonts = DEFAULT_FONT) => {
     `./node_modules/figlet/fonts/${fontName}.flf`
   );
 
-  const data = fs.readFileSync(fontPath, 'utf8');
+  const data = fs.readFileSync(fontPath, "utf8");
 
   return data;
 };
 
 export const getAsciiFromText = (text: string, font?: Fonts) => {
-  const FONT_OPTIONS: figlet.Options = {
-    font: DEFAULT_FONT,
-    width: SIZE.width,
-    horizontalLayout: 'default',
-    verticalLayout: 'default'
-  };
-
+  console.log(font);
   const fontName = font || DEFAULT_FONT;
+  const fontOptions: figlet.Options = {
+    font: fontName,
+    width: SIZE.width,
+    horizontalLayout: "default",
+    verticalLayout: "default",
+  };
 
   // Only need to load each unique font once, then figlet can access it
   if (!fontsLoaded.includes(fontName)) {
     console.log(`Loading new font '${fontName}'`);
 
-    const fontData = getServerFont(DEFAULT_FONT);
+    const fontData = getServerFont(fontName);
     figlet.parseFont(fontName, fontData);
     fontsLoaded.push(fontName);
 
-    console.log('Fonts Loaded: ', fontsLoaded);
+    console.log("Fonts Loaded: ", fontsLoaded);
   }
 
-  console.log('converting text ', text);
+  console.log("converting text ", text);
 
-  const ascii = figlet.textSync(text, { ...FONT_OPTIONS, font: fontName });
+  const ascii = figlet.textSync(text, { ...fontOptions });
 
   // figlet returns all sorts of characters, but for a flipdot it's either on or off
   // this replaces everything that isn't a space, or a new line character, into an X
-  const parsedAscii = ascii.replace(/[^\s\n]/g, 'X');
+  const parsedAscii = ascii.replace(/[^\s\n]/g, "X");
 
   // convert string to array at line breaks
-  const asciiRows = parsedAscii.split('\n');
+  const asciiRows = parsedAscii.split("\n");
 
   // get a matrix to fill
   // var mat = this.matrix(aart.length + offset[0], this.columns, invert);

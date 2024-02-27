@@ -1,40 +1,56 @@
-'use client';
+"use client";
 
-import type { DotMatrix } from '@/types/flipdot';
-import { useState } from 'react';
-import { applyArrayToMatrix, emptyMatrix } from '@/utils/display';
-import TextInput from '@/components/inputs/TextInput';
-import Button from '@/components/inputs/Button';
-import Checkbox from '@/components/inputs/Checkbox';
-import styles from './TextToFont.module.css';
+import type { DotMatrix } from "@/types/flipdot";
+import { useState, useEffect } from "react";
+import { applyArrayToMatrix, emptyMatrix } from "@/utils/display";
+import TextInput from "@/components/inputs/TextInput";
+import styles from "./TextToFont.module.css";
+import type { Fonts } from "figlet";
 
 interface ControlProps {
+  activeMessage: string;
+  activeFont: Fonts;
   setMatrix: (matrix: DotMatrix) => void;
+  setActiveMessage: (message: string) => void;
 }
 
 const TextToFont = (props: ControlProps) => {
-  const [message, setMessage] = useState('');
+  // default to true, don't see any reason to turn it off yet
   const [liveUpdate, setLiveUpdate] = useState(true);
 
+  // so that the preview immediately updates when the font changes
+  useEffect(() => {
+    submitMessage(props.activeMessage, props.activeFont);
+  }, [props.activeFont]);
+
   const onMessageChange = (text: string) => {
-    setMessage(text);
+    props.setActiveMessage(text);
 
     if (liveUpdate) {
-      submitMessage(text);
+      submitMessage(text, props.activeFont);
     }
   };
 
-  const submitMessage = async (newMessage: string) => {
+  const submitMessage = async (newMessage: string, font: Fonts) => {
     if (!newMessage) {
       props.setMatrix(emptyMatrix());
       return;
     }
 
-    const urlParams = new URLSearchParams({
-      message: newMessage
+    const data = {
+      text: newMessage,
+      font: font,
+    };
+
+    const textRes = await fetch("/api/text", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
     });
 
-    const textRes = await fetch('/api/text?' + urlParams);
     const resJSON = await textRes.json();
 
     const matrixWithText = applyArrayToMatrix(resJSON.matrix);
@@ -45,17 +61,7 @@ const TextToFont = (props: ControlProps) => {
   return (
     <div className={styles.textToFontWrapper}>
       <div className={styles.textInputWrapper}>
-        <TextInput value={message} onChange={onMessageChange} />
-      </div>
-      <div className={styles.submitWrapper}>
-        <Button onClick={() => submitMessage(message)}>⬆️</Button>
-      </div>
-      <div className={styles.liveInputWrapper}>
-        <Checkbox
-          label='Live update'
-          onChange={setLiveUpdate}
-          checked={liveUpdate}
-        />
+        <TextInput value={props.activeMessage} onChange={onMessageChange} />
       </div>
     </div>
   );

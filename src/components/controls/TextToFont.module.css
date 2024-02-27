@@ -1,7 +1,5 @@
 .textToFontWrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  white-space: nowrap;
 }
 
 .submitWrapper {
@@ -11,8 +9,6 @@
 .textInputWrapper {
   display: inline-block;
   vertical-align: middle;
-
-  max-width: 50vw;
 }
 
 .liveInputWrapper {
