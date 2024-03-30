@@ -1,17 +1,19 @@
-"use client";
+'use client';
 
-import type { DotMatrix } from "@/types/flipdot";
-import { useState, useEffect } from "react";
-import { applyArrayToMatrix, emptyMatrix } from "@/utils/display";
-import TextInput from "@/components/inputs/TextInput";
-import styles from "./TextToFont.module.css";
-import type { Fonts } from "figlet";
+import type { DotMatrix } from '@/types/flipdot';
+import { useState, useEffect } from 'react';
+import { applyArrayToMatrix, emptyMatrix } from '@/utils/display';
+import TextInput from '@/components/inputs/TextInput';
+import styles from './TextToFont.module.css';
+import type { Fonts } from 'figlet';
 
 interface ControlProps {
   activeMessage: string;
+  passwordEntered: string;
   activeFont: Fonts;
   setMatrix: (matrix: DotMatrix) => void;
   setActiveMessage: (message: string) => void;
+  setPasswordEntered: (password: string) => void;
 }
 
 const TextToFont = (props: ControlProps) => {
@@ -31,6 +33,10 @@ const TextToFont = (props: ControlProps) => {
     }
   };
 
+  const onPasswordChange = (password: string) => {
+    props.setPasswordEntered(password);
+  };
+
   const submitMessage = async (newMessage: string, font: Fonts) => {
     if (!newMessage) {
       props.setMatrix(emptyMatrix());
@@ -39,16 +45,16 @@ const TextToFont = (props: ControlProps) => {
 
     const data = {
       text: newMessage,
-      font: font,
+      font: font
     };
 
-    const textRes = await fetch("/api/text", {
-      method: "POST",
+    const textRes = await fetch('/api/text', {
+      method: 'POST',
       body: JSON.stringify(data),
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
     });
 
     const resJSON = await textRes.json();
@@ -61,7 +67,18 @@ const TextToFont = (props: ControlProps) => {
   return (
     <div className={styles.textToFontWrapper}>
       <div className={styles.textInputWrapper}>
-        <TextInput value={props.activeMessage} onChange={onMessageChange} />
+        <TextInput
+          type='text'
+          label='Message:'
+          value={props.activeMessage}
+          onChange={onMessageChange}
+        />
+        <TextInput
+          type='password'
+          label='Password:'
+          value={props.passwordEntered}
+          onChange={onPasswordChange}
+        />
       </div>
     </div>
   );

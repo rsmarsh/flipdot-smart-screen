@@ -1,9 +1,10 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, HTMLInputTypeAttribute } from 'react';
 import styles from './TextInput.module.css';
 
 interface TextInputProps {
   label?: string;
   value: string;
+  type?: HTMLInputTypeAttribute;
   onChange: (newText: string) => void;
 }
 
@@ -13,11 +14,13 @@ const TextInput = (props: TextInputProps) => {
     props.onChange(newValue);
   };
 
+  const inputType = props.type || 'text';
+
   return (
     <div className={styles.textInputWrapper}>
       <label className={styles.textInputLabel}>{props.label}</label>
       <input
-        type='text'
+        type={inputType}
         value={props.value}
         onChange={handleChange}
         className={styles.textInput}
