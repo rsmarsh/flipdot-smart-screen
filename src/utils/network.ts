@@ -1,3 +1,4 @@
+import { DotMatrix } from '@/types/flipdot';
 import type { Fonts } from 'figlet';
 
 // API is on the same url but different subdomain
@@ -18,6 +19,11 @@ interface SendTextOptions {
   message: string;
   password: string;
   font: Fonts;
+}
+
+interface SendMatrixOptions {
+  matrix: boolean[][];
+  password: string;
 }
 
 export const sendTextToDisplay = async (options: SendTextOptions) => {
@@ -44,6 +50,23 @@ export const sendTextToDisplay = async (options: SendTextOptions) => {
   console.log(req);
 };
 
-export const sendMatrixToDisplay = () => {
-  // TODO
+export const sendMatrixToDisplay = async (options: SendMatrixOptions) => {
+  const url = 'https://isitnice.co.uk/matrix';
+
+  const data = {
+    matrix: options.matrix,
+    password: options.password
+  };
+
+  const req = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+
+    body: JSON.stringify(data)
+  });
+
+  console.log(req);
 };

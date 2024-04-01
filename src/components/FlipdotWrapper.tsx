@@ -14,7 +14,7 @@ const FlipdotWrapper = () => {
   return (
     <div>
       <Emulator height={SIZE.height} width={SIZE.width} matrix={matrix} />
-      <Controls setMatrix={setMatrix} />
+      <Controls setMatrix={setMatrix} activeMatrix={matrix} />
     </div>
   );
 };

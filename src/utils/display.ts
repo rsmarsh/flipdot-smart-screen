@@ -122,3 +122,21 @@ export const centerAlignMatrix = (matrix: DotMatrix) => {
 
   return centeredMatrix;
 };
+
+// takes in the JS matrix object, and converts it to a 2d boolean array
+export const convertMatrixToBooleanArray = (matrix: DotMatrix) => {
+  const booleanMatrix = [];
+  debugger;
+  for (let row in matrix) {
+    const matrixRow = [];
+
+    for (const col in matrix[row]) {
+      // add the lit boolean to the array
+      matrixRow.push(matrix[row][col].lit);
+    }
+
+    booleanMatrix.push(matrixRow);
+  }
+
+  return booleanMatrix;
+};

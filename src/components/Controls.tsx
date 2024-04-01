@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Fonts } from 'figlet';
 
 interface ControlsProps {
+  activeMatrix: DotMatrix;
   setMatrix: (matrix: DotMatrix) => void;
 }
 
@@ -30,6 +31,7 @@ const Controls = (props: ControlsProps) => {
       <Randomise setMatrix={props.setMatrix} />
       <SendToScreen
         activeMessage={activeMessage}
+        activeMatrix={props.activeMatrix}
         passwordEntered={passwordEntered}
         activeFont={activeFont}
       />
