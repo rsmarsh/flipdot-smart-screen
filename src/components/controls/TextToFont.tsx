@@ -2,7 +2,11 @@
 
 import type { DotMatrix } from '@/types/flipdot';
 import { useState, useEffect } from 'react';
-import { applyArrayToMatrix, emptyMatrix } from '@/utils/display';
+import {
+  applyArrayToMatrix,
+  centerAlignMatrix,
+  emptyMatrix
+} from '@/utils/display';
 import TextInput from '@/components/inputs/TextInput';
 import styles from './TextToFont.module.css';
 import type { Fonts } from 'figlet';
@@ -60,8 +64,8 @@ const TextToFont = (props: ControlProps) => {
     const resJSON = await textRes.json();
 
     const matrixWithText = applyArrayToMatrix(resJSON.matrix);
-
-    props.setMatrix(matrixWithText);
+    const centeredMatrix = centerAlignMatrix(matrixWithText);
+    props.setMatrix(centeredMatrix);
   };
 
   return (

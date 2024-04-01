@@ -1,11 +1,11 @@
-import path from "path";
-import fs from "fs";
-import figlet, { type Fonts } from "figlet";
-import SIZE from "@/config/size";
-import { fontList } from "@/utils/fontList";
+import path from 'path';
+import fs from 'fs';
+import figlet, { type Fonts } from 'figlet';
+import SIZE from '@/config/size';
+import { fontList } from '@/utils/fontList';
 
 // A growing list of fonts worth using
-const DEFAULT_FONT = "Banner";
+const DEFAULT_FONT = 'Banner';
 const fontsLoaded: string[] = [];
 
 /**
@@ -23,7 +23,7 @@ export const getServerFont = (fontName: figlet.Fonts = DEFAULT_FONT) => {
     `./node_modules/figlet/fonts/${fontName}.flf`
   );
 
-  const data = fs.readFileSync(fontPath, "utf8");
+  const data = fs.readFileSync(fontPath, 'utf8');
 
   return data;
 };
@@ -34,8 +34,8 @@ export const getAsciiFromText = (text: string, font?: Fonts) => {
   const fontOptions: figlet.Options = {
     font: fontName,
     width: SIZE.width,
-    horizontalLayout: "default",
-    verticalLayout: "default",
+    horizontalLayout: 'default',
+    verticalLayout: 'default'
   };
 
   // Only need to load each unique font once, then figlet can access it
@@ -46,19 +46,19 @@ export const getAsciiFromText = (text: string, font?: Fonts) => {
     figlet.parseFont(fontName, fontData);
     fontsLoaded.push(fontName);
 
-    console.log("Fonts Loaded: ", fontsLoaded);
+    console.log('Fonts Loaded: ', fontsLoaded);
   }
 
-  console.log("converting text ", text);
+  console.log('converting text ', text);
 
   const ascii = figlet.textSync(text, { ...fontOptions });
 
   // figlet returns all sorts of characters, but for a flipdot it's either on or off
   // this replaces everything that isn't a space, or a new line character, into an X
-  const parsedAscii = ascii.replace(/[^\s\n]/g, "X");
+  const parsedAscii = ascii.replace(/[^\s\n]/g, 'X');
 
   // convert string to array at line breaks
-  const asciiRows = parsedAscii.split("\n");
+  const asciiRows = parsedAscii.split('\n');
 
   // get a matrix to fill
   // var mat = this.matrix(aart.length + offset[0], this.columns, invert);
@@ -70,6 +70,18 @@ export const getAsciiFromText = (text: string, font?: Fonts) => {
   //       row.charAt(j) === '' || row.charAt(j) === ' ' ? invert : !invert;
   //   }
   // });
+
+  let firstRowWithContent = asciiRows.length;
+
+  // find the first row which is not blank, and then remove the blanks from the top
+  asciiRows.forEach((row, index) => {
+    if (row.includes('X')) {
+      firstRowWithContent = Math.min(firstRowWithContent, index);
+    }
+  });
+
+  // cut out the initial leading rows that were blank
+  asciiRows.splice(0, firstRowWithContent);
 
   return asciiRows;
 };

@@ -1,16 +1,15 @@
-"use client";
+'use client';
 
-import Emulator from "./Emulator";
-import Controls from "./Controls";
-import SIZE from "@/config/size";
+import Emulator from './Emulator';
+import Controls from './Controls';
+import SIZE from '@/config/size';
 
-import { useState, createContext } from "react";
-import { emptyMatrix } from "@/utils/display";
+import { useState } from 'react';
+import { emptyMatrix } from '@/utils/display';
 
 const FlipdotWrapper = () => {
   const initialMatrix = emptyMatrix(SIZE);
   const [matrix, setMatrix] = useState(initialMatrix);
-  const [centered, setCentered] = useState(false);
 
   return (
     <div>
