@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const serverPort = 3000;
+const serverPort = 3001;
 const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
@@ -33,6 +33,7 @@ app.use(express.json());
 
 var allowedOrigins = [
   'http://localhost:3000',
+  'http://localhost:3001',
   'https://flipdot.isitnice.co.uk',
   'https://isitnice.co.uk',
   'https://flipdot.richardmarshall.dev',
@@ -96,7 +97,6 @@ app.post('/matrix/', (req, res) => {
   flipdot.writeMatrix(matrix);
   flipdot.send();
 
-  
   res.send(`Displaying custom matrix`);
 });
 
