@@ -1,9 +1,14 @@
-const { Client } = require("pg");
+const { Client } = require('pg');
 
 let client;
 
 (async () => {
-  client = await connectToClient();
+  try {
+    client = await connectToClient();
+  } catch (err) {
+    // liekly due to dev on a machine without psql running/installed
+    console.error('ERROR: connecting to DB failed');
+  }
 })();
 
 async function connectToClient() {
@@ -12,7 +17,7 @@ async function connectToClient() {
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
+    port: process.env.DB_PORT
   });
 
   await client.connect();
@@ -20,11 +25,11 @@ async function connectToClient() {
 }
 
 async function queryFontId(fontName) {
-  const fontQuery = "SELECT font_id FROM fonts WHERE font_name = $1";
+  const fontQuery = 'SELECT font_id FROM fonts WHERE font_name = $1';
   const res = await client.query(fontQuery, [fontName]);
 
   if (res.rows.length === 0) {
-    console.log("no font found with the name: ", fontName);
+    console.log('no font found with the name: ', fontName);
     return;
   }
 
@@ -33,16 +38,16 @@ async function queryFontId(fontName) {
 
 async function insertMessage(message, fontName) {
   const fontId = await queryFontId(fontName);
-  if (typeof fontId === "undefined") {
+  if (typeof fontId === 'undefined') {
     return;
   }
 
   const insertQuery =
-    "INSERT INTO messages (message_text, font_id, sent_on) VALUES ($1, $2, NOW())";
+    'INSERT INTO messages (message_text, font_id, sent_on) VALUES ($1, $2, NOW())';
   try {
     client.query(insertQuery, [message, fontId]);
   } catch (err) {
-    console.error("Error when writing message to DB: ", err);
+    console.error('Error when writing message to DB: ', err);
   }
 }
 
@@ -61,5 +66,5 @@ async function queryMessageHistory() {
 
 module.exports = {
   insertMessage,
-  queryMessageHistory,
+  queryMessageHistory
 };

@@ -15,7 +15,26 @@ const ROWS = 16;
 const COLUMNS = 96;
 
 const FlipDot = require('flipdot-display');
-const flipdot = new FlipDot(PORT, ADDRESS, ROWS, COLUMNS);
+
+let flipdot;
+
+// when working on a device not connected to an actual flipdot, prevent it attempting to connect and erroirng
+if (process.env.NODE_ENV === 'development') {
+  flipdot = {
+    writeText: () => {
+      console.log('flipdot.writeText call intercepted');
+    },
+    writeMatrix: () => {
+      console.log('flipdot.writeMatrix call intercepted');
+    },
+    send: () => {
+      console.log('flipdot.send call intercepted');
+    },
+    once: () => {}
+  };
+} else {
+  flipdot = new FlipDot(PORT, ADDRESS, ROWS, COLUMNS);
+}
 
 let visitorCount = 0;
 
