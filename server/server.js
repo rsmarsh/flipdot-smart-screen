@@ -4,6 +4,7 @@ const cors = require('cors');
 const serverPort = 3001;
 const path = require('path');
 const fs = require('fs');
+const SIZE = require('./src/size.js');
 require('dotenv').config();
 
 const { insertMessage, queryMessageHistory } = require('./db.js');
@@ -11,8 +12,8 @@ const { insertMessage, queryMessageHistory } = require('./db.js');
 const PORT = '/dev/ttyUSB0';
 // const PORT = 'COM3'; // Windows USB port
 const ADDRESS = 1;
-const ROWS = 16;
-const COLUMNS = 96;
+const ROWS = SIZE.HEIGHT;
+const COLUMNS = SIZE.WIDTH;
 
 const FlipDot = require('flipdot-display');
 
@@ -52,10 +53,7 @@ app.use(express.json());
 
 var allowedOrigins = [
   'http://localhost:3000',
-  'http://localhost:3001',
-  'https://flipdot.isitnice.co.uk',
   'https://isitnice.co.uk',
-  'https://flipdot.richardmarshall.dev',
   'https://richardmarshall.dev'
 ];
 
@@ -63,7 +61,6 @@ app.use(
   cors({
     origin: function (origin, callback) {
       if (allowedOrigins.indexOf(origin) === -1 && origin !== undefined) {
-        console.log(origin);
         var msg = 'Not in CORS allow list';
         return callback(new Error(msg), false);
       }

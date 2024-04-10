@@ -2,17 +2,12 @@ import { DotMatrix } from '@/types/flipdot';
 import type { Fonts } from 'figlet';
 
 // API is on the same url but different subdomain
-const getTextAPIUrl = () => {
-  var parts = location.hostname.split('.');
-  if (parts[0] !== 'localhost') {
-    parts.shift();
+const getApiBaseUrl = () => {
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:3001';
+  } else {
+    return '';
   }
-  var tldHostname = parts.join('.');
-
-  const protocol = window.location.protocol;
-  const apiUrl = `${protocol}://${tldHostname}/text`;
-
-  return apiUrl;
 };
 
 interface SendTextOptions {
@@ -27,7 +22,7 @@ interface SendMatrixOptions {
 }
 
 export const sendTextToDisplay = async (options: SendTextOptions) => {
-  const url = 'https://isitnice.co.uk/text'; // getTextAPIUrl();
+  const url = getApiBaseUrl() + '/text';
 
   const font = options.font || 'Banner';
 
@@ -51,7 +46,7 @@ export const sendTextToDisplay = async (options: SendTextOptions) => {
 };
 
 export const sendMatrixToDisplay = async (options: SendMatrixOptions) => {
-  const url = 'https://isitnice.co.uk/matrix';
+  const url = getApiBaseUrl() + '/matrix';
 
   const data = {
     matrix: options.matrix,
