@@ -8,6 +8,7 @@ const SIZE = require('./src/size.js');
 require('dotenv').config();
 
 const { insertMessage, queryMessageHistory } = require('./db.js');
+const { getEmptyMatrix } = require('./src/utils.js');
 
 const PORT = '/dev/ttyUSB0';
 // const PORT = 'COM3'; // Windows USB port
@@ -18,6 +19,7 @@ const COLUMNS = SIZE.WIDTH;
 const FlipDot = require('flipdot-display');
 
 let flipdot;
+let currentMatrix = getEmptyMatrix();
 
 // when working on a device not connected to an actual flipdot, prevent it attempting to connect and erroirng
 if (process.env.NODE_ENV === 'development') {
@@ -25,7 +27,7 @@ if (process.env.NODE_ENV === 'development') {
     writeText: () => {
       console.log('flipdot.writeText call intercepted');
     },
-    writeMatrix: () => {
+    writeMatrix: (matrix) => {
       console.log('flipdot.writeMatrix call intercepted');
     },
     send: () => {
@@ -70,13 +72,18 @@ app.use(
 );
 
 app.post('/text/', (req, res) => {
-  const { message, password, font } = req.body;
+  const { message, password, font, section } = req.body;
   const apiPassword = process.env.TEXT_API_PASSWORD;
 
   // return an error if the incorrect password is sent
   if (password !== apiPassword) {
     res.status(401).json({ err: 'Incorrect Password' });
     return;
+  }
+
+  // specify a section if adding to only a partial part of the display
+  if (section) {
+    // TODO
   }
 
   flipdot.writeText(message, {
@@ -112,6 +119,8 @@ app.post('/matrix/', (req, res) => {
   // converts the matrix to bytes then writes it
   flipdot.writeMatrix(matrix);
   flipdot.send();
+
+  currentMatrix = matrix;
 
   res.send(`Displaying custom matrix`);
 });

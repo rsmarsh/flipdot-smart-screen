@@ -35,10 +35,28 @@ const getQuarterSectionedMatrix = () => {
   return matrix;
 };
 
-console.log(getQuarterSectionedMatrix());
+/** Applies any active cells in matrixToAdd onto the matrix */
+const combineTwoMatrix = (
+  matrix,
+  matrixToAdd,
+  config = { startCol: 0, startRow: 0 }
+) => {
+  for (let row = 0; row < matrixToAdd.length; row++) {
+    for (let col = 0; col < matrixToAdd.length; col++) {
+      if (matrixToAdd[row][col] === true) {
+        // offset where abouts it writes onto the matrix, so quadrants can be targeted
+        const colToWrite = col + config.startCol;
+        const rowToWrite = row + config.startRow;
+
+        matrix[rowToWrite][colToWrite] = true;
+      }
+    }
+  }
+};
 
 module.exports = {
   getEmptyMatrix,
   getHalfSectionedMatrix,
-  getQuarterSectionedMatrix
+  getQuarterSectionedMatrix,
+  combineTwoMatrix
 };
