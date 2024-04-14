@@ -8,7 +8,11 @@ const SIZE = require('./src/size.js');
 require('dotenv').config();
 
 const { insertMessage, queryMessageHistory } = require('./db.js');
-const { getEmptyMatrix } = require('./src/utils.js');
+const {
+  getEmptyMatrix,
+  getOffsetPositions,
+  combineTwoMatrix
+} = require('./src/utils.js');
 
 const PORT = '/dev/ttyUSB0';
 // const PORT = 'COM3'; // Windows USB port
@@ -19,6 +23,7 @@ const COLUMNS = SIZE.WIDTH;
 const FlipDot = require('flipdot-display');
 
 let flipdot;
+let visitorCount = 0;
 let currentMatrix = getEmptyMatrix();
 
 // when working on a device not connected to an actual flipdot, prevent it attempting to connect and erroirng
@@ -38,8 +43,6 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   flipdot = new FlipDot(PORT, ADDRESS, ROWS, COLUMNS);
 }
-
-let visitorCount = 0;
 
 app.get('/', (req, res) => {
   const options = {
@@ -81,20 +84,47 @@ app.post('/text/', (req, res) => {
     return;
   }
 
-  // specify a section if adding to only a partial part of the display
-  if (section) {
-    // TODO
-  }
-
-  flipdot.writeText(message, {
+  const fontOptions = {
     font: font,
     width: COLUMNS,
     printDirection: 0
-  });
+  };
 
-  flipdot.send();
-  res.send(`Displaying "${message}" using "${font}" font`);
+  const offset = [0, 0];
+  const invert = false;
 
+  // specify a section if adding to only a partial part of the display
+  if (section) {
+    const offsets = getOffsetPositions(section);
+    offset[0] = offsets.startCol;
+    offset[1] = offsets.startRow;
+
+    // limit the width to the total size of the selected section
+    fontOptions.width = offsets.endCol - offsets.startCol;
+    const load = false;
+
+    // with load set to false, it will return the matrix but not send it onto the screen
+    const partialMatrixData = flipdot.writeText(
+      message,
+      fontOptions,
+      offset,
+      invert,
+      load
+    );
+
+    // the current matrix with the targeted section wiped
+    const preparedMatrix = getPartiallyCleanedMatrix(section, currentMatrix);
+    // then append the new matrix data to the cleaned one
+    const combinedMatrix = combineTwoMatrix(preparedMatrix, partialMatrixData);
+
+    flipdot.send(combinedMatrix);
+    res.send(`Displaying a combined matrix`);
+  } else {
+    flipdot.writeText(message, fontOptions);
+
+    flipdot.send();
+    res.send(`Displaying "${message}" using "${font}" font`);
+  }
   // triggers a DB write with this message
   insertMessage(message, font);
 });

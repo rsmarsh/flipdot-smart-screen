@@ -1,11 +1,80 @@
 const SIZE = require('./size.js');
 
 /* Returns a full size empry matrix */
-const getEmptyMatrix = () => {
+const getEmptyMatrix = (setToValue = false) => {
   const matrix = new Array(SIZE.HEIGHT);
 
   for (let row = 0; row < matrix.length; row++) {
-    matrix[row] = new Array(SIZE.WIDTH).fill(false);
+    matrix[row] = new Array(SIZE.WIDTH).fill(setToValue);
+  }
+
+  return matrix;
+};
+
+const getOffsetPositions = (sectionName) => {
+  /**
+   * The sections can be:
+   * 'TopLeft',
+   * 'TopRight',
+   * 'BottomLeft',
+   * 'BottomRight',
+   * 'Top',
+   * 'Bottom'
+   */
+
+  const fullHeight = matrix.length;
+  const fullWidth = matrix[0].length;
+  const halfHeight = fullHeight / 2;
+  const halfWidth = fullWidth / 2;
+
+  let startRow = 0;
+  let startCol = 0;
+  let endRow = fullHeight;
+  let endCol = fullWidth;
+
+  switch (sectionName) {
+    case 'TopLeft':
+      endRow = halfHeight;
+      endCol = halfWidth;
+      break;
+
+    case 'TopRight':
+      startCol = halfWidth;
+      endRow = halfHeight;
+      break;
+
+    case 'BottomLeft':
+      startRow = halfHeight;
+      endCol = halfWidth;
+      break;
+
+    case 'BottomRight':
+      startRow = halfHeight;
+      startCol = halfWidth;
+      break;
+
+    case 'Top':
+      endRow = halfHeight;
+      break;
+
+    case 'Bottom':
+      startRow = halfHeight;
+      break;
+  }
+
+  return { startRow, endRow, startCol, endCol };
+};
+
+// wipe a specific section from the provided matrix
+const getPartiallyCleanedMatrix = (sectionName, matrix, setToValue = false) => {
+  const { startRow, endRow, startCol, endCol } =
+    getOffsetPositions(sectionName);
+
+  // now we know the start/end bounds to wipe
+  for (let row = startRow; row < endRow; row++) {
+    for (let col = startCol; col < endCol; col++) {
+      matrix[row][col] = setToValue;
+    }
   }
 
   return matrix;
@@ -42,24 +111,39 @@ const getQuarterSectionedMatrix = () => {
 const combineTwoMatrix = (
   matrix,
   matrixToAdd,
-  config = { startCol: 0, startRow: 0 }
+  config = {
+    startCol: 0,
+    startRow: 0,
+    colsToAdd: undefined,
+    rowsToAdd: undefined
+  }
 ) => {
-  for (let row = 0; row < matrixToAdd.length; row++) {
-    for (let col = 0; col < matrixToAdd.length; col++) {
+  const combined = [...matrix];
+
+  // to make adding a small section of the matrix easier, you can provide a cap so it doesn't overwrite too much to the right/below
+  const rowsToAdd = config.rowsToAdd || matrixToAdd[0].length;
+  const colsToAdd = config.colsToAdd || matrixToAdd.length;
+
+  for (let row = 0; row < rowsToAdd; row++) {
+    for (let col = 0; col < colsToAdd; col++) {
       if (matrixToAdd[row][col] === true) {
         // offset where abouts it writes onto the matrix, so quadrants can be targeted
         const colToWrite = col + config.startCol;
         const rowToWrite = row + config.startRow;
 
-        matrix[rowToWrite][colToWrite] = true;
+        combined[rowToWrite][colToWrite] = true;
       }
     }
   }
+
+  return combined;
 };
 
 module.exports = {
   getEmptyMatrix,
   getHalfSectionedMatrix,
   getQuarterSectionedMatrix,
-  combineTwoMatrix
+  combineTwoMatrix,
+  getPartiallyCleanedMatrix,
+  getOffsetPositions
 };
