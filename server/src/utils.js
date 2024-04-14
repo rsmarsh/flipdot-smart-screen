@@ -3,7 +3,10 @@ const SIZE = require('./size.js');
 /* Returns a full size empry matrix */
 const getEmptyMatrix = () => {
   const matrix = new Array(SIZE.HEIGHT);
-  matrix.fill(new Array(SIZE.WIDTH).fill(false));
+
+  for (let row = 0; row < matrix.length; row++) {
+    matrix[row] = new Array(SIZE.WIDTH).fill(false);
+  }
 
   return matrix;
 };
