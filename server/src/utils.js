@@ -14,16 +14,17 @@ const getEmptyMatrix = (setToValue = false) => {
 const getOffsetPositions = (sectionName) => {
   /**
    * The sections can be:
-   * 'TopLeft',
-   * 'TopRight',
-   * 'BottomLeft',
-   * 'BottomRight',
-   * 'Top',
-   * 'Bottom'
+   * 'topleft',
+   * 'topright',
+   * 'bottomleft',
+   * 'bottomright',
+   * 'top',
+   * 'bottom'
+   * 'all'
    */
 
-  const fullHeight = matrix.length;
-  const fullWidth = matrix[0].length;
+  const fullHeight = SIZE.HEIGHT;
+  const fullWidth = SIZE.WIDTH;
   const halfHeight = fullHeight / 2;
   const halfWidth = fullWidth / 2;
 
@@ -33,32 +34,36 @@ const getOffsetPositions = (sectionName) => {
   let endCol = fullWidth;
 
   switch (sectionName) {
-    case 'TopLeft':
+    case 'topleft':
       endRow = halfHeight;
       endCol = halfWidth;
       break;
 
-    case 'TopRight':
+    case 'topright':
       startCol = halfWidth;
       endRow = halfHeight;
       break;
 
-    case 'BottomLeft':
+    case 'bottomleft':
       startRow = halfHeight;
       endCol = halfWidth;
       break;
 
-    case 'BottomRight':
+    case 'bottomright':
       startRow = halfHeight;
       startCol = halfWidth;
       break;
 
-    case 'Top':
+    case 'top':
       endRow = halfHeight;
       break;
 
-    case 'Bottom':
+    case 'bottom':
       startRow = halfHeight;
+      break;
+
+    case 'all':
+      // uses 0 through to the end, the default values
       break;
   }
 
@@ -121,8 +126,8 @@ const combineTwoMatrix = (
   const combined = [...matrix];
 
   // to make adding a small section of the matrix easier, you can provide a cap so it doesn't overwrite too much to the right/below
-  const rowsToAdd = config.rowsToAdd || matrixToAdd[0].length;
-  const colsToAdd = config.colsToAdd || matrixToAdd.length;
+  const rowsToAdd = config.rowsToAdd || matrixToAdd.length - 1;
+  const colsToAdd = config.colsToAdd || matrixToAdd[0].length - 1;
 
   for (let row = 0; row < rowsToAdd; row++) {
     for (let col = 0; col < colsToAdd; col++) {
@@ -130,6 +135,15 @@ const combineTwoMatrix = (
         // offset where abouts it writes onto the matrix, so quadrants can be targeted
         const colToWrite = col + config.startCol;
         const rowToWrite = row + config.startRow;
+
+        // this can happen with large fonts which are bigger than the matrix they are being added to
+        // doing continue here will just crop them off
+        if (
+          combined[rowToWrite] === undefined ||
+          combined[rowToWrite][colToWrite] === undefined
+        ) {
+          continue;
+        }
 
         combined[rowToWrite][colToWrite] = true;
       }
@@ -139,11 +153,33 @@ const combineTwoMatrix = (
   return combined;
 };
 
+const convertAsciiToBooleanMatrix = (asciiArray) => {
+  // this replaces everything that isn't a space, or a new line character, into true
+  const asciiRows = asciiArray.map((row) =>
+    row.split('').map((char) => char !== ' ')
+  );
+
+  let firstRowWithContent = asciiRows.length;
+
+  // find the first row which is not blank, and then remove the blanks from the top
+  asciiRows.forEach((row, index) => {
+    if (row.includes(true)) {
+      firstRowWithContent = Math.min(firstRowWithContent, index);
+    }
+  });
+
+  // cut out the initial leading rows that were blank
+  asciiRows.splice(0, firstRowWithContent);
+
+  return asciiRows;
+};
+
 module.exports = {
   getEmptyMatrix,
   getHalfSectionedMatrix,
   getQuarterSectionedMatrix,
   combineTwoMatrix,
   getPartiallyCleanedMatrix,
-  getOffsetPositions
+  getOffsetPositions,
+  convertAsciiToBooleanMatrix
 };

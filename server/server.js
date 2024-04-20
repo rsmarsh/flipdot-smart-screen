@@ -11,7 +11,11 @@ const { insertMessage, queryMessageHistory } = require('./db.js');
 const {
   getEmptyMatrix,
   getOffsetPositions,
-  combineTwoMatrix
+  combineTwoMatrix,
+  getPartiallyCleanedMatrix,
+  convertAsciiToBooleanMatrix,
+  getQuarterSectionedMatrix,
+  getHalfSectionedMatrix
 } = require('./src/utils.js');
 
 const PORT = '/dev/ttyUSB0';
@@ -26,23 +30,22 @@ let flipdot;
 let visitorCount = 0;
 let currentMatrix = getEmptyMatrix();
 
+const logMatrix = (matrix) => {
+  let textMatrix = [];
+  matrix.forEach((row) => {
+    const stringRow = row.map((dot) => (dot ? 'X' : ' ')).join('');
+    textMatrix.push(stringRow);
+  });
+
+  console.log(textMatrix);
+};
+
 // when working on a device not connected to an actual flipdot, prevent it attempting to connect and erroirng
-if (process.env.NODE_ENV === 'development') {
-  flipdot = {
-    writeText: () => {
-      console.log('flipdot.writeText call intercepted');
-    },
-    writeMatrix: (matrix) => {
-      console.log('flipdot.writeMatrix call intercepted');
-    },
-    send: () => {
-      console.log('flipdot.send call intercepted');
-    },
-    once: () => {}
-  };
-} else {
-  flipdot = new FlipDot(PORT, ADDRESS, ROWS, COLUMNS);
-}
+
+flipdot = new FlipDot(PORT, ADDRESS, ROWS, COLUMNS, undefined, {
+  debug: true,
+  devMode: process.env.NODE_ENV === 'development'
+});
 
 app.get('/', (req, res) => {
   const options = {
@@ -95,29 +98,66 @@ app.post('/text/', (req, res) => {
 
   // specify a section if adding to only a partial part of the display
   if (section) {
+    // find out at which section to apply the partial matrix onto the full matrix
     const offsets = getOffsetPositions(section);
-    offset[0] = offsets.startCol;
-    offset[1] = offsets.startRow;
 
     // limit the width to the total size of the selected section
     fontOptions.width = offsets.endCol - offsets.startCol;
     const load = false;
 
     // with load set to false, it will return the matrix but not send it onto the screen
-    const partialMatrixData = flipdot.writeText(
+    const partialMatrixData = flipdot.getMatrixFromText(
       message,
       fontOptions,
-      offset,
+      [0, 0], //default offset for now, we handle it separately below
       invert,
       load
     );
 
+    const partialMatrixBooleanArray =
+      convertAsciiToBooleanMatrix(partialMatrixData);
+
     // the current matrix with the targeted section wiped
     const preparedMatrix = getPartiallyCleanedMatrix(section, currentMatrix);
+
+    const quarterSections = [
+      'topleft',
+      'topright',
+      'bottomleft',
+      'bottomright'
+    ];
+    const halfSections = ['top', 'bottom'];
+
+    // draws the lines between the sections on the matrix depending on the section chosen by the user,
+    // this may have no effect the second time on the same type of divide, but it doesn't hurt to reapply
+    let dividedMatrix;
+    if (quarterSections.includes(section)) {
+      dividedMatrix = getQuarterSectionedMatrix();
+    } else if (halfSections.includes(section)) {
+      dividedMatrix = getHalfSectionedMatrix();
+    } else {
+      // drawing full screen, no need to draw any divided
+      dividedMatrix = preparedMatrix;
+    }
+
+    const sectionedMatrix = combineTwoMatrix(preparedMatrix, dividedMatrix);
+
     // then append the new matrix data to the cleaned one
-    const combinedMatrix = combineTwoMatrix(preparedMatrix, partialMatrixData);
+    const combinedMatrix = combineTwoMatrix(
+      sectionedMatrix,
+      partialMatrixBooleanArray,
+      { startCol: offsets.startCol, startRow: offsets.startRow }
+    );
 
     flipdot.send(combinedMatrix);
+
+    // Update the most latest displayed matrix
+    currentMatrix = combinedMatrix;
+
+    if (process.env.NODE_ENV === 'development') {
+      logMatrix(currentMatrix);
+    }
+
     res.send(`Displaying a combined matrix`);
   } else {
     flipdot.writeText(message, fontOptions);
@@ -126,7 +166,9 @@ app.post('/text/', (req, res) => {
     res.send(`Displaying "${message}" using "${font}" font`);
   }
   // triggers a DB write with this message
-  insertMessage(message, font);
+  if (process.env.NODE_ENV !== 'development') {
+    insertMessage(message, font);
+  }
 });
 
 // allows a matrix to be sent directly to the api, as a true/false array of arrays
