@@ -9,7 +9,7 @@ interface CheckboxProps {
 const Checkbox = (props: CheckboxProps) => {
   return (
     <div className={styles.checkboxWrapper}>
-      {props.label}:
+      <div>{props.label}:</div>
       <input
         type='checkbox'
         className={styles.checkbox}

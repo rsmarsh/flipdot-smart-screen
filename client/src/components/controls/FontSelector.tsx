@@ -1,5 +1,5 @@
-import { fontList } from "@/utils/fontList";
-import type { Fonts } from "figlet";
+import { fontList } from '@/utils/fontList';
+import type { Fonts } from 'figlet';
 
 interface FontSelectorProps {
   activeFont: Fonts;
@@ -13,20 +13,24 @@ const FontSelector = (props: FontSelectorProps) => {
 
   return (
     <div>
-      <select
-        value={props.activeFont}
-        onChange={(e) => onFontChange(e.currentTarget.value as Fonts)}
-      >
-        {fontList.map((fontName) => (
-          <option
-            key={fontName}
-            value={fontName}
-            // selected={fontName === props.activeFont}
-          >
-            {fontName}
-          </option>
-        ))}
-      </select>
+      <label>
+        <div style={{ color: '#fff' }}>Font:</div>
+        <select
+          style={{ height: '3rem' }}
+          value={props.activeFont}
+          onChange={(e) => onFontChange(e.currentTarget.value as Fonts)}
+        >
+          {fontList.map((fontName) => (
+            <option
+              key={fontName}
+              value={fontName}
+              // selected={fontName === props.activeFont}
+            >
+              {fontName}
+            </option>
+          ))}
+        </select>
+      </label>
     </div>
   );
 };

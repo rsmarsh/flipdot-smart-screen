@@ -21,8 +21,8 @@ const Controls = (props: ControlsProps) => {
 
   return (
     <div className={styles.controls}>
-      <FontSelector activeFont={activeFont} setActiveFont={setActiveFont} />
       <SectionSelect onSectionChange={setSelectedSection} />
+      <FontSelector activeFont={activeFont} setActiveFont={setActiveFont} />
       <TextToFont
         activeMessage={activeMessage}
         passwordEntered={passwordEntered}

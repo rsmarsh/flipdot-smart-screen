@@ -1,3 +1,13 @@
 .selectInputWrapper {
   display: block;
+  text-align: left;
+}
+
+.selectInput {
+  height: 3rem;
+  width: 115px;
+}
+
+.inputLabel {
+  color: #fff;
 }

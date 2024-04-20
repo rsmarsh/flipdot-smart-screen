@@ -18,13 +18,15 @@ const TextInput = (props: TextInputProps) => {
 
   return (
     <div className={styles.textInputWrapper}>
-      <label className={styles.textInputLabel}>{props.label}</label>
-      <input
-        type={inputType}
-        value={props.value}
-        onChange={handleChange}
-        className={styles.textInput}
-      />
+      <label>
+        <div className={styles.textInputLabel}>{props.label}</div>
+        <input
+          type={inputType}
+          value={props.value}
+          onChange={handleChange}
+          className={styles.textInput}
+        />
+      </label>
     </div>
   );
 };
