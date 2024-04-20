@@ -3,9 +3,10 @@ import Randomise from './controls/Randomise';
 import TextToFont from './controls/TextToFont';
 import SendToScreen from './controls/SendToScreen';
 import FontSelector from './controls/FontSelector';
+import SectionSelect from './controls/SectionSelect';
 import styles from './Controls.module.css';
 import { useState } from 'react';
-import { Fonts } from 'figlet';
+import type { Fonts } from 'figlet';
 
 interface ControlsProps {
   activeMatrix: DotMatrix;
@@ -16,10 +17,12 @@ const Controls = (props: ControlsProps) => {
   const [activeMessage, setActiveMessage] = useState('');
   const [passwordEntered, setPasswordEntered] = useState('');
   const [activeFont, setActiveFont] = useState<Fonts>('Banner');
+  const [selectedSection, setSelectedSection] = useState<string>('top');
 
   return (
     <div className={styles.controls}>
       <FontSelector activeFont={activeFont} setActiveFont={setActiveFont} />
+      <SectionSelect onSectionChange={setSelectedSection} />
       <TextToFont
         activeMessage={activeMessage}
         passwordEntered={passwordEntered}
@@ -34,6 +37,7 @@ const Controls = (props: ControlsProps) => {
         activeMatrix={props.activeMatrix}
         passwordEntered={passwordEntered}
         activeFont={activeFont}
+        selectedSection={selectedSection}
       />
     </div>
   );

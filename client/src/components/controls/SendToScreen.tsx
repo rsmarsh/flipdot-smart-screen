@@ -9,24 +9,31 @@ interface ControlProps {
   passwordEntered: string;
   activeFont: Fonts;
   activeMatrix: DotMatrix;
+  selectedSection: string;
 }
 
 const SendToScreen = (props: ControlProps) => {
-  // const handleClick = () => {
-  //   sendTextToDisplay({
-  //     message: props.activeMessage,
-  //     password: props.passwordEntered,
-  //     font: props.activeFont
-  //   });
-  // };
-
   const handleClick = () => {
-    const booleanMatrixArray = convertMatrixToBooleanArray(props.activeMatrix);
+    // All sends an entire matrix to the backend to display as sent
+    if (props.selectedSection === 'all') {
+      const booleanMatrixArray = convertMatrixToBooleanArray(
+        props.activeMatrix
+      );
 
-    sendMatrixToDisplay({
-      matrix: booleanMatrixArray,
-      password: props.passwordEntered
-    });
+      sendMatrixToDisplay({
+        matrix: booleanMatrixArray,
+        password: props.passwordEntered
+      });
+
+      // Otherwise, we are sending the text for the backend to add to a specific section of the display
+    } else {
+      sendTextToDisplay({
+        message: props.activeMessage,
+        font: props.activeFont,
+        section: props.selectedSection,
+        password: props.passwordEntered
+      });
+    }
   };
 
   return (

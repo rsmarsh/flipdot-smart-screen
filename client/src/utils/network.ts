@@ -1,4 +1,3 @@
-import { DotMatrix } from '@/types/flipdot';
 import type { Fonts } from 'figlet';
 
 // API is on the same url but different subdomain
@@ -14,6 +13,7 @@ interface SendTextOptions {
   message: string;
   password: string;
   font: Fonts;
+  section: string;
 }
 
 interface SendMatrixOptions {
@@ -29,6 +29,7 @@ export const sendTextToDisplay = async (options: SendTextOptions) => {
   const data = {
     font: font,
     message: options.message,
+    section: options.section,
     password: options.password
   };
 
@@ -41,8 +42,6 @@ export const sendTextToDisplay = async (options: SendTextOptions) => {
 
     body: JSON.stringify(data)
   });
-
-  console.log(req);
 };
 
 export const sendMatrixToDisplay = async (options: SendMatrixOptions) => {
@@ -62,6 +61,4 @@ export const sendMatrixToDisplay = async (options: SendMatrixOptions) => {
 
     body: JSON.stringify(data)
   });
-
-  console.log(req);
 };
