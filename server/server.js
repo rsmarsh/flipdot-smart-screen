@@ -120,31 +120,31 @@ app.post('/text/', (req, res) => {
     // the current matrix with the targeted section wiped
     const preparedMatrix = getPartiallyCleanedMatrix(section, currentMatrix);
 
-    const quarterSections = [
-      'topleft',
-      'topright',
-      'bottomleft',
-      'bottomright'
-    ];
-    const halfSections = ['top', 'bottom'];
-
+    ////////////// FEATURE DISABLED FOR NOW - section lines didn't look good /////////////////
+    // const quarterSections = [
+    //   'topleft',
+    //   'topright',
+    //   'bottomleft',
+    //   'bottomright'
+    // ];
+    // const halfSections = ['top', 'bottom'];
+    //
     // draws the lines between the sections on the matrix depending on the section chosen by the user,
     // this may have no effect the second time on the same type of divide, but it doesn't hurt to reapply
-    let dividedMatrix;
-    if (quarterSections.includes(section)) {
-      dividedMatrix = getQuarterSectionedMatrix();
-    } else if (halfSections.includes(section)) {
-      dividedMatrix = getHalfSectionedMatrix();
-    } else {
-      // drawing full screen, no need to draw any divided
-      dividedMatrix = preparedMatrix;
-    }
-
-    const sectionedMatrix = combineTwoMatrix(preparedMatrix, dividedMatrix);
+    // let dividedMatrix;
+    // if (quarterSections.includes(section)) {
+    //   dividedMatrix = getQuarterSectionedMatrix();
+    // } else if (halfSections.includes(section)) {
+    //   dividedMatrix = getHalfSectionedMatrix();
+    // } else {
+    //   // drawing full screen, no need to draw any divided
+    //   dividedMatrix = preparedMatrix;
+    // }
+    // const sectionedMatrix = combineTwoMatrix(preparedMatrix, dividedMatrix);
 
     // then append the new matrix data to the cleaned one
     const combinedMatrix = combineTwoMatrix(
-      sectionedMatrix,
+      preparedMatrix,
       partialMatrixBooleanArray,
       { startCol: offsets.startCol, startRow: offsets.startRow }
     );
