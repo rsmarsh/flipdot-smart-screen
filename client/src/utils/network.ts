@@ -42,6 +42,8 @@ export const sendTextToDisplay = async (options: SendTextOptions) => {
 
     body: JSON.stringify(data)
   });
+
+  return req;
 };
 
 export const sendMatrixToDisplay = async (options: SendMatrixOptions) => {

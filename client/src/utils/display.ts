@@ -37,7 +37,7 @@ export const randomMatrix = (size: SizeObject) => {
   return matrix;
 };
 
-export const applyArrayToMatrix = (dataArray: string[]) => {
+export const applyArrayToMatrix = (dataArray: boolean[][]) => {
   const matrix = emptyMatrix();
 
   // no point going higher or wider than the screen allows
@@ -46,7 +46,8 @@ export const applyArrayToMatrix = (dataArray: string[]) => {
   for (let row = 0; row < rowMax; row++) {
     const colMax = Math.min(SIZE.width, dataArray[row].length);
     for (let dotIndex = 0; dotIndex < colMax; dotIndex++) {
-      if (dataArray[row][dotIndex] === 'X') {
+      // base it on truthy values to allow experimenting with different api formats
+      if (Boolean(dataArray[row][dotIndex])) {
         matrix[row][dotIndex].lit = true;
       }
     }
