@@ -1,0 +1,8 @@
+services:
+  client:
+    build:
+      # use client's own dockerfile instead of build info in here
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'

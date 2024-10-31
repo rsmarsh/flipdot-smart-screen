@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  console.log('getting matrix');
   const asciiMatrix = getAsciiFromText(text, font);
   const data = {
     matrix: asciiMatrix
