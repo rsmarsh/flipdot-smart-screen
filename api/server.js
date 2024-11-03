@@ -1,8 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const serverPort = 3001;
-const path = require('path');
+const API_PORT = 3001;
 const fs = require('fs');
 const SIZE = require('./src/size.js');
 require('dotenv').config();
@@ -13,9 +12,9 @@ const {
   getOffsetPositions,
   combineTwoMatrix,
   getPartiallyCleanedMatrix,
-  convertAsciiToBooleanMatrix,
-  getQuarterSectionedMatrix,
-  getHalfSectionedMatrix
+  convertAsciiToBooleanMatrix
+  // getQuarterSectionedMatrix,
+  // getHalfSectionedMatrix
 } = require('./src/utils.js');
 
 const PORT = '/dev/ttyUSB0';
@@ -40,21 +39,11 @@ const logMatrix = (matrix) => {
   console.log(textMatrix);
 };
 
-// when working on a device not connected to an actual flipdot, prevent it attempting to connect and erroirng
-
 flipdot = new FlipDot(PORT, ADDRESS, ROWS, COLUMNS, undefined, {
+  // debug causes logs to fire for all flipdot related actions
   debug: true,
+  // devMode mode allows working on a device not connected to an actual flipdot
   devMode: process.env.NODE_ENV === 'development'
-});
-
-app.get('/', (req, res) => {
-  const options = {
-    root: path.join(__dirname)
-  };
-
-  res.sendFile(`${options.root}/src/index.html`);
-  console.log(`Visitor ${visitorCount} appeared`);
-  visitorCount += 1;
 });
 
 app.use(express.json());
@@ -203,8 +192,8 @@ app.get('/history', async (req, res) => {
   res.json(messageHistory);
 });
 
-app.listen(serverPort, () => {
-  console.log('https server listening');
+app.listen(API_PORT, () => {
+  console.log('Express server listening');
 });
 
 flipdot.once('error', function (err) {
