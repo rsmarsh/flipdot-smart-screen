@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
-const cors = require('cors');
 const API_PORT = 3001;
 const fs = require('fs');
 const SIZE = require('./src/size.js');
@@ -44,27 +43,21 @@ const flipdotConfig = {
 };
 
 const flipdot = new FlipdotDisplay(flipdotConfig);
-// flipdot = new FlipDot(PORT, ADDRESS, ROWS, COLUMNS, undefined, {});
 
 app.use(express.json());
 
-var allowedOrigins = [
-  'http://localhost:3000',
-  'https://isitnice.co.uk',
-  'https://richardmarshall.dev'
-];
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (allowedOrigins.indexOf(origin) === -1 && origin !== undefined) {
-        var msg = 'Not in CORS allow list';
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
-    }
-  })
-);
+// No longer exposing the screen api publicly, all traffic will come from internal services
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (allowedOrigins.indexOf(origin) === -1 && origin !== undefined) {
+//         var msg = 'Not in CORS allow list';
+//         return callback(new Error(msg), false);
+//       }
+//       return callback(null, true);
+//     }
+//   })
+// );
 
 app.post('/text/', (req, res) => {
   const { message, password, font, section } = req.body;
