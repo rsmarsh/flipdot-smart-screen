@@ -1,11 +1,20 @@
-FROM node:21
+FROM node:21.6.1
 
-WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-COPY package*.json ./
-RUN npm install
+WORKDIR /client
+
+COPY package.json ./
+COPY package-lock.json ./
+
+RUN npm ci
 
 COPY . .
 EXPOSE 3000
 
-CMD npm run dev
+# build the nextjs app
+RUN npm run build
+
+# run the built app
+CMD ["npm", "run", "start"]

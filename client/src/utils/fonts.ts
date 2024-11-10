@@ -29,7 +29,6 @@ export const getServerFont = (fontName: figlet.Fonts = DEFAULT_FONT) => {
 };
 
 export const getAsciiFromText = (text: string, font?: Fonts) => {
-  console.log(font);
   const fontName = font || DEFAULT_FONT;
   const fontOptions: figlet.Options = {
     font: fontName,
@@ -70,7 +69,6 @@ export const getAsciiFromText = (text: string, font?: Fonts) => {
   const boolRows = arrayRows.map((row) =>
     row.map((char) => (char !== ' ' ? pixelOn : pixelOff))
   );
-  console.log(boolRows);
 
   // get a matrix to fill
   // var mat = this.matrix(aart.length + offset[0], this.columns, invert);

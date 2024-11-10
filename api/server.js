@@ -1,11 +1,11 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const serverPort = 3001;
-const path = require('path');
+const API_PORT = 3001;
 const fs = require('fs');
 const SIZE = require('./src/size.js');
-require('dotenv').config();
 
 const { insertMessage, queryMessageHistory } = require('./db.js');
 const {
@@ -13,20 +13,12 @@ const {
   getOffsetPositions,
   combineTwoMatrix,
   getPartiallyCleanedMatrix,
-  convertAsciiToBooleanMatrix,
-  getQuarterSectionedMatrix,
-  getHalfSectionedMatrix
+  convertAsciiToBooleanMatrix
+  // getQuarterSectionedMatrix,
+  // getHalfSectionedMatrix
 } = require('./src/utils.js');
+const FlipdotDisplay = require('./src/flipdot.js');
 
-const PORT = '/dev/ttyUSB0';
-// const PORT = 'COM3'; // Windows USB port
-const ADDRESS = 1;
-const ROWS = SIZE.HEIGHT;
-const COLUMNS = SIZE.WIDTH;
-
-const FlipDot = require('flipdot-display');
-
-let flipdot;
 let visitorCount = 0;
 let currentMatrix = getEmptyMatrix();
 
@@ -40,22 +32,19 @@ const logMatrix = (matrix) => {
   console.log(textMatrix);
 };
 
-// when working on a device not connected to an actual flipdot, prevent it attempting to connect and erroirng
+const flipdotConfig = {
+  // logs every internal event seen by the flipdot library
+  debug: false,
+  devMode: process.env.NODE_ENV === 'development',
+  port: '/dev/ttyUSB0', // 'COM3' = Windows USB port
+  address: 1,
+  rows: SIZE.HEIGHT,
+  columns: SIZE.WIDTH,
+  initialMessage: 'Hello'
+};
 
-flipdot = new FlipDot(PORT, ADDRESS, ROWS, COLUMNS, undefined, {
-  debug: true,
-  devMode: process.env.NODE_ENV === 'development'
-});
-
-app.get('/', (req, res) => {
-  const options = {
-    root: path.join(__dirname)
-  };
-
-  res.sendFile(`${options.root}/src/index.html`);
-  console.log(`Visitor ${visitorCount} appeared`);
-  visitorCount += 1;
-});
+const flipdot = new FlipdotDisplay(flipdotConfig);
+// flipdot = new FlipDot(PORT, ADDRESS, ROWS, COLUMNS, undefined, {});
 
 app.use(express.json());
 
@@ -103,16 +92,9 @@ app.post('/text/', (req, res) => {
 
     // limit the width to the total size of the selected section
     fontOptions.width = offsets.endCol - offsets.startCol;
-    const load = false;
 
-    // with load set to false, it will return the matrix but not send it onto the screen
-    const partialMatrixData = flipdot.getMatrixFromText(
-      message,
-      fontOptions,
-      [0, 0], //default offset for now, we handle it separately below
-      invert,
-      load
-    );
+    // Gets a matrix for the message without updating the display
+    const partialMatrixData = flipdot.getMatrixFromText(message, fontOptions);
 
     const partialMatrixBooleanArray =
       convertAsciiToBooleanMatrix(partialMatrixData);
@@ -149,7 +131,8 @@ app.post('/text/', (req, res) => {
       { startCol: offsets.startCol, startRow: offsets.startRow }
     );
 
-    flipdot.send(combinedMatrix);
+    // TODO, confirm this as working, it was using flipdot.send(combinedMatrix) before
+    flipdot.showMatrix(combinedMatrix);
 
     // Update the most latest displayed matrix
     currentMatrix = combinedMatrix;
@@ -160,9 +143,8 @@ app.post('/text/', (req, res) => {
 
     res.send(`Displaying a combined matrix`);
   } else {
-    flipdot.writeText(message, fontOptions);
+    flipdot.showText(message, fontOptions);
 
-    flipdot.send();
     res.send(`Displaying "${message}" using "${font}" font`);
   }
   // triggers a DB write with this message
@@ -188,9 +170,7 @@ app.post('/matrix/', (req, res) => {
     return;
   }
 
-  // converts the matrix to bytes then writes it
-  flipdot.writeMatrix(matrix);
-  flipdot.send();
+  flipdot.showMatrix(matrix);
 
   currentMatrix = matrix;
 
@@ -203,26 +183,8 @@ app.get('/history', async (req, res) => {
   res.json(messageHistory);
 });
 
-app.listen(serverPort, () => {
-  console.log('https server listening');
-});
-
-flipdot.once('error', function (err) {
-  console.log(err);
-  console.log('an error occured');
-});
-
-flipdot.once('close', function () {
-  console.log('connection closed');
-});
-
-flipdot.once('open', function () {
-  const dataSent = flipdot.writeText('Hello', {
-    font: 'Banner',
-    width: COLUMNS,
-    printDirection: 0
-  });
-  flipdot.send();
+app.listen(API_PORT, () => {
+  console.log('Express server listening');
 });
 
 function saveFont(fontName, message) {
