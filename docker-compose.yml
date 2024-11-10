@@ -13,6 +13,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - '3001:3001'
+    devices:
+      - '/dev/ttyUSB0:/dev/ttyUSB0' # Grant docker access to USB-to-serial device
+
 
   # something like this:
   # db:
