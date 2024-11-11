@@ -6,6 +6,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
+    environment:
+      # Internal network address to reach the api
+      - API_URL=http://api:3001
 
   api:
     build:

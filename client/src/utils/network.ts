@@ -1,29 +1,19 @@
-import type { Fonts } from 'figlet';
+import { TextPreviewOptions } from '@/app/api/preview/text/route';
+import type { SendMatrixOptions } from '@/app/api/screen/matrix/route';
+import type { SendTextOptions } from '@/app/api/screen/text/route';
 
-// API is on the same url but different subdomain
-const getApiBaseUrl = () => {
-  if (process.env.NODE_ENV === 'development') {
-    return 'http://localhost:3001';
-  } else {
-    return '';
+const API = {
+  preview: {
+    text: '/api/preview/text',
+    matrix: 'api/preview/matrix'
+  },
+  screen: {
+    text: '/api/screen/text',
+    matrix: '/api/screen/matrix'
   }
 };
 
-interface SendTextOptions {
-  message: string;
-  password: string;
-  font: Fonts;
-  section: string;
-}
-
-interface SendMatrixOptions {
-  matrix: boolean[][];
-  password: string;
-}
-
 export const sendTextToDisplay = async (options: SendTextOptions) => {
-  const url = getApiBaseUrl() + '/text';
-
   const font = options.font || 'Banner';
 
   const data = {
@@ -33,7 +23,7 @@ export const sendTextToDisplay = async (options: SendTextOptions) => {
     password: options.password
   };
 
-  const req = await fetch(url, {
+  const req = await fetch(API.screen.text, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -47,20 +37,34 @@ export const sendTextToDisplay = async (options: SendTextOptions) => {
 };
 
 export const sendMatrixToDisplay = async (options: SendMatrixOptions) => {
-  const url = getApiBaseUrl() + '/matrix';
-
-  const data = {
-    matrix: options.matrix,
-    password: options.password
-  };
-
-  const req = await fetch(url, {
+  const req = await fetch(API.screen.matrix, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     },
 
-    body: JSON.stringify(data)
+    body: JSON.stringify(options)
   });
+
+  return req;
+};
+
+export const getPreviewFromText = async (options: TextPreviewOptions) => {
+  const data = {
+    text: options.text,
+    font: options.font
+  };
+
+  const textRes = await fetch('/api/preview/text', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const resJSON = await textRes.json();
+  return resJSON;
 };

@@ -10,6 +10,7 @@ import {
 import TextInput from '@/components/inputs/TextInput';
 import styles from './TextToFont.module.css';
 import type { Fonts } from 'figlet';
+import { getPreviewFromText } from '@/utils/network';
 
 interface ControlProps {
   activeMessage: string;
@@ -47,23 +48,13 @@ const TextToFont = (props: ControlProps) => {
       return;
     }
 
-    const data = {
+    // gets a matrix from the next API to use in the screen emulator
+    const preview = await getPreviewFromText({
       text: newMessage,
       font: font
-    };
-
-    const textRes = await fetch('/api/text', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
     });
 
-    const resJSON = await textRes.json();
-
-    const matrixWithText = applyArrayToMatrix(resJSON.matrix);
+    const matrixWithText = applyArrayToMatrix(preview.matrix);
     const centeredMatrix = centerAlignMatrix(matrixWithText);
     props.setMatrix(centeredMatrix);
   };

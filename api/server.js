@@ -41,7 +41,7 @@ const flipdotConfig = {
   address: 1,
   rows: SIZE.HEIGHT,
   columns: SIZE.WIDTH,
-  initialMessage: 'Hello'
+  initialMessage: 'Hello' // TODO doesn't work, fires too soon?
 };
 
 const flipdot = new FlipdotDisplay(flipdotConfig);
@@ -145,7 +145,7 @@ app.post('/text/', (req, res) => {
     res.send(`Displaying "${message}" using "${font}" font`);
   }
   // triggers a DB write with this message
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV.trim() !== 'development') {
     insertMessage(message, font);
   }
 });
