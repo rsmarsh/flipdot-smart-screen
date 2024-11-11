@@ -1,6 +1,8 @@
 require('dotenv').config();
 
 const express = require('express');
+const cors = require('cors');
+
 const app = express();
 const API_PORT = 3001;
 const fs = require('fs');
@@ -46,6 +48,7 @@ const flipdot = new FlipdotDisplay(flipdotConfig);
 
 app.use(express.json());
 
+app.use(cors());
 // No longer exposing the screen api publicly, all traffic will come from internal services
 // app.use(
 //   cors({
@@ -71,7 +74,8 @@ app.post('/text/', (req, res) => {
 
   const fontOptions = {
     font: font,
-    width: COLUMNS,
+    // this was COLUMNS before, might need fixing if it didn't always want to be full width
+    width: SIZE.WIDTH,
     printDirection: 0
   };
 

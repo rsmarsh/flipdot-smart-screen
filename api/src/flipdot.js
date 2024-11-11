@@ -65,8 +65,8 @@ class FlipdotDisplay {
   showText(message, font = 'Banner') {
     // inverts the colour scheme, useful addition later via a toggle
     const invert = false;
-    // with load set to false, it will now internally trigger an update until updateDisplay is called
-    const load = false;
+    // TODO: does load auto trigger a screen update, or just queue it?
+    const load = true;
 
     this.flipdot.writeText(
       message,
@@ -85,7 +85,7 @@ class FlipdotDisplay {
 
   // Converts a matrix to bytes then writes it to the display
   showMatrix(matrix) {
-    this.flipdot.writeMatrix(matrix, false);
+    this.flipdot.writeMatrix(matrix);
     this.updateDisplay();
   }
 
@@ -97,7 +97,7 @@ class FlipdotDisplay {
   // Returns the matrix from the specified text, does not update the display
   // Useful for making any manupulations to the matrix before sending it to the display
   getMatrixFromText(text, fontOptions) {
-    return flipdot.getMatrixFromText(text, fontOptions);
+    return this.flipdot.getMatrixFromText(text, fontOptions);
   }
 }
 
