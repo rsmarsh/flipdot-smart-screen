@@ -1,0 +1,30 @@
+services:
+  client:
+    build:
+      # use client's own dockerfile instead of build info in here
+      context: ./client
+      dockerfile: Dockerfile.dev
+    ports:
+      - '3000:3000'
+    environment:
+      # Internal network address to reach the api
+      - API_URL=http://api:3001
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    ports:
+      - '3001:3001'
+
+  # something like this:
+  # db:
+  # image: postgres:13
+  # environment:
+  #   POSTGRES_USER: postgres
+  #   POSTGRES_PASSWORD: example
+  #   POSTGRES_DB: mydatabase
+  # volumes:
+  #   - pgdata:/var/lib/postgresql/data
+  # ports:
+  #   - "1234:1234"

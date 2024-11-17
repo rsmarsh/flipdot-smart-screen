@@ -36,7 +36,7 @@ const logMatrix = (matrix) => {
 const flipdotConfig = {
   // logs every internal event seen by the flipdot library
   debug: false,
-  devMode: process.env.NODE_ENV === 'development',
+  devMode: process.env.NODE_ENV.trim() === 'development',
   port: '/dev/ttyUSB0', // 'COM3' = Windows USB port
   address: 1,
   rows: SIZE.HEIGHT,
@@ -134,7 +134,7 @@ app.post('/text/', (req, res) => {
     // Update the most latest displayed matrix
     currentMatrix = combinedMatrix;
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV.trim() === 'development') {
       logMatrix(currentMatrix);
     }
 
