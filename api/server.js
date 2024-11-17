@@ -8,7 +8,7 @@ const API_PORT = 3001;
 const fs = require('fs');
 const SIZE = require('./src/size.js');
 
-const { insertMessage, queryMessageHistory } = require('./db.js');
+const { insertMessage, queryMessageHistory } = require('./src/dbComms.js');
 const {
   getEmptyMatrix,
   getOffsetPositions,
