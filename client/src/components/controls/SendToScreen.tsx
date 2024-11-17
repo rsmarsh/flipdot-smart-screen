@@ -22,7 +22,10 @@ const SendToScreen = (props: ControlProps) => {
 
       sendMatrixToDisplay({
         matrix: booleanMatrixArray,
-        password: props.passwordEntered
+        password: props.passwordEntered,
+        // fields not needed but useful to know what was sent, this may have to change if custom drawing is added
+        message: props.activeMessage,
+        font: props.activeFont
       });
 
       // Otherwise, we are sending the text for the backend to add to a specific section of the display

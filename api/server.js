@@ -49,22 +49,10 @@ const flipdot = new FlipdotDisplay(flipdotConfig);
 app.use(express.json());
 
 app.use(cors());
-// No longer exposing the screen api publicly, all traffic will come from internal services
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       if (allowedOrigins.indexOf(origin) === -1 && origin !== undefined) {
-//         var msg = 'Not in CORS allow list';
-//         return callback(new Error(msg), false);
-//       }
-//       return callback(null, true);
-//     }
-//   })
-// );
 
 app.post('/text/', (req, res) => {
   const { message, password, font, section } = req.body;
-  const apiPassword = process.env.TEXT_API_PASSWORD;
+  const apiPassword = process.env.API_PASSWORD;
 
   // return an error if the incorrect password is sent
   if (password !== apiPassword) {
@@ -144,17 +132,16 @@ app.post('/text/', (req, res) => {
 
     res.send(`Displaying "${message}" using "${font}" font`);
   }
-  // triggers a DB write with this message
-  if (process.env.NODE_ENV.trim() !== 'development') {
-    insertMessage(message, font);
-  }
+
+  // trigger a DB write with this message
+  insertMessage(message, font);
 });
 
 // allows a matrix to be sent directly to the api, as a true/false array of arrays
 app.post('/matrix/', (req, res) => {
   const { matrix, password } = req.body;
 
-  const apiPassword = process.env.TEXT_API_PASSWORD;
+  const apiPassword = process.env.API_PASSWORD;
 
   // return an error if the incorrect password is sent
   if (password !== apiPassword) {
@@ -172,6 +159,9 @@ app.post('/matrix/', (req, res) => {
   currentMatrix = matrix;
 
   res.send(`Displaying custom matrix`);
+
+  // trigger a DB write with this message
+  insertMessage(message, font);
 });
 
 // returns the message list history when requested

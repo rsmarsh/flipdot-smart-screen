@@ -1,9 +1,12 @@
 import { getApiBaseUrl } from '@/app/api/utils/api';
+import type { Fonts } from 'figlet';
 import type { NextRequest } from 'next/server';
 
 export interface SendMatrixOptions {
   matrix: boolean[][];
   password: string;
+  font: Fonts;
+  message: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -12,7 +15,9 @@ export async function POST(req: NextRequest) {
 
   const body = {
     matrix: data.matrix,
-    password: data.password
+    password: data.password,
+    message: data.message,
+    font: data.font
   };
 
   const apiReq = await fetch(url, {

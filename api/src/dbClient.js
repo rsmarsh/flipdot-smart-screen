@@ -6,6 +6,9 @@ let remainingConnectAttempts = 25;
 
 // can be used to prevent errors from DB actions too early on
 function getClientReadyStatus() {
+  if (!clientConnected) {
+    console.log('DB client not ready or unavailable, DB action skipped');
+  }
   return clientConnected;
 }
 
@@ -14,7 +17,7 @@ function getClient() {
 }
 
 function connectDbClient() {
-  if (getClientReadyStatus()) {
+  if (client) {
     return;
   }
 
