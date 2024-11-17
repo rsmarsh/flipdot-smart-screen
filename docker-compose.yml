@@ -8,7 +8,9 @@ services:
       - '3000:3000'
     environment:
       # Internal network address to reach the api
-      - API_URL=http://api:3001
+      - API_URL:http://api:3001
+    depends_on:
+      - api
 
   api:
     build:
@@ -16,18 +18,26 @@ services:
       dockerfile: Dockerfile
     ports:
       - '3001:3001'
+    environment:
+      DB_PORT: 5432
+      DB_HOST: ${DB_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     devices:
       - '/dev/ttyUSB0:/dev/ttyUSB0' # Grant docker access to USB-to-serial device
+    depends_on:
+      - db # Ensure db starts first
 
-
-  # something like this:
-  # db:
-  # image: postgres:13
-  # environment:
-  #   POSTGRES_USER: postgres
-  #   POSTGRES_PASSWORD: example
-  #   POSTGRES_DB: mydatabase
-  # volumes:
-  #   - pgdata:/var/lib/postgresql/data
-  # ports:
-  #   - "1234:1234"
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./db/db-data:/var/lib/postgresql/data # Persistent DB data across container start-ups
+      - ./db/db-init:/docker-entrypoint-initdb.d # Runs initial scripts to create + insert the initial DB data
+      - ./db/db-init/fonts.csv:/fonts.csv # Mount fonts.csv for loading
+    ports:
+      - '5432:5432'

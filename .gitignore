@@ -18,3 +18,7 @@ client/.next/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# DB
+**/db-data/*
+**/db-data-dev/*
