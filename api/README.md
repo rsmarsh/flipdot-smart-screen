@@ -12,7 +12,7 @@ So at the decimal stage, if the data to be sent started off with with [240, 206,
 
 For column 1, the top half, since 240 = 11110000 in binary, it would display the following:
 
-(where 'O' = on, and '.' = off)
+(where 'O' = on, and '.' = off)\
 O\
 O\
 O\
@@ -24,7 +24,7 @@ O\
 
 and then the bottom half of the column
 
-206 which = 11001110:
+206 which = 11001110:\
 O\
 O\
 .\
