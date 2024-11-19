@@ -20,7 +20,7 @@ O\
 .\
 .\
 .\
-.\
+.
 
 and then the bottom half of the column
 
@@ -32,7 +32,7 @@ O\
 O\
 O\
 O\
-.\
+.
 
 Note that it is backwards, the first byte is applied from the bottom of the column half and heading upwards
 
