@@ -9,29 +9,30 @@ Each half of a column is first represented by a decimal number, so a maximum of 
 This number is then converted into binary before it is sent to the display.
 
 So at the decimal stage, if the data to be sent started off with with [240, 206, ...]
+
 For column 1, the top half, since 240 = 11110000 in binary, it would display the following:
 
-(where 'X' = on, and - = 'off')
-X
-X
-X
-X
--
--
--
--
+(where 'O' = on, and '.' = off)
+O
+O
+O
+O
+. 
+. 
+. 
+. 
 
 and then the bottom half of the column
 
 206 which = 11001110:
-X
-X
--
--
-X
-X
-X
--
+O
+O
+. 
+. 
+O
+O
+O
+. 
 
 Note that it is backwards, the first byte is applied from the bottom of the column half and heading upwards
 
