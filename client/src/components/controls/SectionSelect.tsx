@@ -30,13 +30,15 @@ const SectionSelect = (props: SectionSelectProps) => {
     bottomright: 'Bottom Right'
   };
 
+  const defaultSection = 'All';
+
   return (
     <div>
       <SelectInput
         label='Screen Section'
         onChange={handleChange}
         options={sections}
-        defaultValue='Top'
+        defaultValue={defaultSection}
       />
     </div>
   );
