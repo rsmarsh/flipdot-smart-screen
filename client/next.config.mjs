@@ -13,6 +13,18 @@ const nextConfig = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname, 'src')
     };
+
+    // Needed to make polling for file changes work if in development mode and Docker
+    if (
+      process.env.NODE_ENV === 'development' &&
+      process.env.IS_DOCKER === 'true'
+    ) {
+      config.watchOptions = {
+        poll: 1000, // Check for changes every second
+        aggregateTimeout: 300 // Delay before rebuilding
+      };
+    }
+
     return config;
   }
 };

@@ -9,8 +9,13 @@ services:
     environment:
       # Internal network address to reach the api
       - API_URL=http://api:3001
+      - IS_DOCKER=true # Identify docker to make changes and re-compilation possible
     depends_on:
       - api
+    volumes:
+      - ./client:/client
+      - /client/node_modules # This excludes node_modules being mounted
+      - /client/.next # Don't want my local .next being mounted
 
   api:
     build:
@@ -19,6 +24,7 @@ services:
     ports:
       - '3001:3001'
     environment:
+      NODE_ENV: development
       DB_PORT: 5432
       DB_HOST: ${DB_HOST}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -26,10 +32,14 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
       - db # Ensure db starts first
+    volumes:
+      - ./api:/api
+      - /api/node_modules # Exclude this directory from mount
 
   db:
     image: postgres:13
     environment:
+      NODE_ENV: development
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
