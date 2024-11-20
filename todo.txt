@@ -1,0 +1,27 @@
+Features:
+- Font vote up/down buttons
+- Save font vote to DB
+- Simple text message history display from API
+- Remove all illegible fonts
+- Try adding a custom font
+- Add manual matrix draw mode
+- Automatic timer to trigger date update
+- "Active App" mode, so different interfaces can be displayed
+- Create an active app #2, weather display
+- Save displayed flipdot matrixes to the DB, so the frontend can restore and display it on load
+- Be able to see a visual list of the flipdot display history and allow a visual history
+- Add a visual font preview list, so you can see what each font would look like at the same time
+- Add some preset displays, image-type stuff
+- Bus sign mode - pick a bus stop and see the Bus info? (API?)
+- Music detection mode 
+
+Improvements
+- Add values to React contexts, like current matrix displayed and current message
+- Debounce message input a little
+- Use reactQuery or similar to prevent repeat api calls when deleting etc.
+
+Bugs:
+- first keypress in message not triggering?
+- Vertical center alignment not always right
+
+
