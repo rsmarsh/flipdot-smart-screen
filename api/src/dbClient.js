@@ -37,17 +37,15 @@ function connectDbClient() {
       console.error(
         `
           Failed to connect to PostgreSQL. 
-          ${remainingConnectAttempts} attempts remaining. 
-          Could still be initialising?
+          ${remainingConnectAttempts} attempts remaining.
           Retrying in 5 seconds...
-        `,
-        err
+        `
       );
 
       if (remainingConnectAttempts > 0) {
         setTimeout(connectDbClient, 5000);
       } else {
-        console.log('No DB connection attempts remaining, giving up.');
+        console.error('No DB connection attempts remaining, giving up.', err);
       }
     } else {
       clientConnected = true;
