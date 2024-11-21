@@ -3,6 +3,7 @@ import { convertMatrixToBooleanArray } from '@/utils/display';
 import Button from '@/components/inputs/Button';
 import { Fonts } from 'figlet';
 import type { DotMatrix } from '@/types/flipdot';
+import { useState } from 'react';
 
 interface ControlProps {
   activeMessage: string;
@@ -13,14 +14,18 @@ interface ControlProps {
 }
 
 const SendToScreen = (props: ControlProps) => {
-  const handleClick = () => {
+  const [isSending, setIsSending] = useState(false);
+
+  const handleClick = async () => {
+    setIsSending(true);
+
     // All sends an entire matrix to the backend to display as sent
     if (props.selectedSection === 'all') {
       const booleanMatrixArray = convertMatrixToBooleanArray(
         props.activeMatrix
       );
 
-      sendMatrixToDisplay({
+      await sendMatrixToDisplay({
         matrix: booleanMatrixArray,
         password: props.passwordEntered,
         // fields not needed but useful to know what was sent, this may have to change if custom drawing is added
@@ -30,18 +35,22 @@ const SendToScreen = (props: ControlProps) => {
 
       // Otherwise, we are sending the text for the backend to add to a specific section of the display
     } else {
-      sendTextToDisplay({
+      await sendTextToDisplay({
         message: props.activeMessage,
         font: props.activeFont,
         section: props.selectedSection,
         password: props.passwordEntered
       });
     }
+
+    setIsSending(false);
   };
 
   return (
     <div>
-      <Button onClick={handleClick}>Send to real Flipdot</Button>
+      <Button onClick={handleClick} isLoading={isSending}>
+        Send to real Flipdot
+      </Button>
     </div>
   );
 };

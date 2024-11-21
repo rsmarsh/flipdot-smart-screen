@@ -1,4 +1,6 @@
 Features:
+- give buttons a nicer loading state for requests
+- add a success/fail message after button load
 - Font vote up/down buttons
 - Save font vote to DB
 - Simple text message history display from API

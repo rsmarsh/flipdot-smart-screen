@@ -17,7 +17,7 @@ const Controls = (props: ControlsProps) => {
   const [activeMessage, setActiveMessage] = useState('');
   const [passwordEntered, setPasswordEntered] = useState('');
   const [activeFont, setActiveFont] = useState<Fonts>('Banner');
-  const [selectedSection, setSelectedSection] = useState<string>('top');
+  const [selectedSection, setSelectedSection] = useState<string>('all');
 
   return (
     <div className={styles.controls}>

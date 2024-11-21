@@ -4,4 +4,47 @@
   padding: 0.25rem;
   border-radius: 1px;
   border: none;
+  position: relative;
+}
+
+.loading::after {
+  position: relative;
+  display: inline-block;
+  content: '';
+  width: 1em;
+  height: 1em;
+  animation: spinning 2s ease-in-out infinite, bouncing 2s ease-in infinite;
+}
+
+@keyframes spinning {
+  0% {
+    transform: rotate(0deg);
+    background-color: blue;
+  }
+  50% {
+    transform: rotate(180deg);
+    background-color: green;
+  }
+  100% {
+    transform: rotate(360deg);
+    background-color: blue;
+  }
+}
+
+@keyframes bouncing {
+  0% {
+    bottom: 0px;
+  }
+  25% {
+    bottom: 8px;
+  }
+  50% {
+    bottom: 0px;
+  }
+  75% {
+    bottom: 4px;
+  }
+  90% {
+    bottom: 0;
+  }
 }

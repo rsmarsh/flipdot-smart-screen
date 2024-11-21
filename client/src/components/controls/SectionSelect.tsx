@@ -1,6 +1,7 @@
 'use client';
 
 import SelectInput from '@/components/inputs/SelectInput';
+import type { SelectOption } from '@/components/inputs/SelectInput';
 
 export type Section =
   | 'all'
@@ -20,17 +21,18 @@ const SectionSelect = (props: SectionSelectProps) => {
     props.onSectionChange(e.currentTarget.value);
   };
 
-  const sections: Record<Section, string> = {
-    all: 'All',
-    top: 'Top',
-    bottom: 'Bottom',
-    topleft: 'Top Left',
-    topright: 'Top Right',
-    bottomleft: 'Bottom Left',
-    bottomright: 'Bottom Right'
-  };
+  const sections: SelectOption[] = [
+    { value: 'all', label: 'All' },
+    { value: 'top', label: 'Top' },
+    { value: 'bottom', label: 'Bottom' },
 
-  const defaultSection = 'All';
+    { value: 'topleft', label: 'Top Left' },
+    { value: 'topright', label: 'Top Right' },
+    { value: 'bottomleft', label: 'Bottom Left' },
+    { value: 'bottomright', label: 'Bottom Right' }
+  ];
+
+  const defaultSection = 'all';
 
   return (
     <div>
