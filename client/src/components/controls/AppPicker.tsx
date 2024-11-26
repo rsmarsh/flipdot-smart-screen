@@ -1,8 +1,8 @@
-import { appList } from '@/utils/appList';
+import { appList, type AppOption } from '@/utils/appList';
 
 interface AppPickerProps {
   activeApp: string;
-  setActiveApp: (newApp: (typeof appList)[number]) => void;
+  setActiveApp: (newApp: AppOption) => void;
 }
 
 const AppPicker = (props: AppPickerProps) => {
@@ -14,9 +14,7 @@ const AppPicker = (props: AppPickerProps) => {
           style={{ height: '3rem' }}
           value={props.activeApp}
           onChange={(e) =>
-            props.setActiveApp(
-              e.currentTarget.value as (typeof appList)[number]
-            )
+            props.setActiveApp(e.currentTarget.value as AppOption)
           }
         >
           {appList.map((appName) => (
