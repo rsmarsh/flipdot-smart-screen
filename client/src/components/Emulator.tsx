@@ -3,15 +3,10 @@ import Dot from './Dot';
 import type { DotMatrix } from '@/types/flipdot';
 
 interface EmulatorProps {
-  width: number;
-  height: number;
   matrix: DotMatrix;
 }
 
 const Emulator = (props: EmulatorProps) => {
-  const gridWidth = props.width;
-  const gridHeight = props.height;
-
   return (
     <div className={styles.frameWrapper}>
       <div className={styles.frame}>

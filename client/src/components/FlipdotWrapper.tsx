@@ -23,7 +23,7 @@ const FlipdotWrapper = () => {
 
   return (
     <div>
-      <Emulator height={SIZE.height} width={SIZE.width} matrix={matrix} />
+      <Emulator matrix={matrix} />
       <AppPicker activeApp={activeApp} setActiveApp={setActiveApp} />
       {appComponents[activeApp]}
     </div>
