@@ -19,7 +19,10 @@ const FlipdotWrapper = () => {
     <div>
       <Emulator matrix={matrix} />
       <AppPicker activeApp={activeApp} setActiveApp={setActiveApp} />
-      {appComponents[activeApp]}
+      {/* dynamically change the visible controls depending on the current app */}
+      {activeApp === 'TextEntry' && (
+        <Controls setMatrix={setMatrix} activeMatrix={matrix} />
+      )}
     </div>
   );
 };
