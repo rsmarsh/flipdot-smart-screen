@@ -2,28 +2,26 @@ import { sendTextToDisplay, sendMatrixToDisplay } from '@/utils/network';
 import { convertMatrixToBooleanArray } from '@/utils/display';
 import Button from '@/components/inputs/Button';
 import { Fonts } from 'figlet';
-import type { DotMatrix } from '@/types/flipdot';
 import { useState } from 'react';
+import { useMatrix } from '@/contexts/matrix';
 
 interface ControlProps {
   activeMessage: string;
   passwordEntered: string;
   activeFont: Fonts;
-  activeMatrix: DotMatrix;
   selectedSection: string;
 }
 
 const SendToScreen = (props: ControlProps) => {
   const [isSending, setIsSending] = useState(false);
+  const { matrix } = useMatrix();
 
   const handleClick = async () => {
     setIsSending(true);
 
     // All sends an entire matrix to the backend to display as sent
     if (props.selectedSection === 'all') {
-      const booleanMatrixArray = convertMatrixToBooleanArray(
-        props.activeMatrix
-      );
+      const booleanMatrixArray = convertMatrixToBooleanArray(matrix);
 
       await sendMatrixToDisplay({
         matrix: booleanMatrixArray,

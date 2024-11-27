@@ -4,15 +4,13 @@ import type { DotMatrix } from '@/types/flipdot';
 import { randomMatrix } from '@/utils/display';
 import Button from '@/components/inputs/Button';
 import SIZE from '@/config/size';
+import { useMatrix } from '@/contexts/matrix';
 
-interface ControlProps {
-  setMatrix: (matrix: DotMatrix) => void;
-}
-
-const Randomise = (props: ControlProps) => {
+const Randomise = () => {
+  const { matrixDispatch } = useMatrix();
   const handleClick = () => {
     const randomisedMatrix = randomMatrix(SIZE);
-    props.setMatrix(randomisedMatrix);
+    matrixDispatch({ type: 'setMatrix', payload: randomisedMatrix });
   };
 
   return (

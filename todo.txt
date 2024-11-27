@@ -18,7 +18,7 @@ Features:
 - Music detection mode 
 
 Improvements
-- Add values to React contexts, like current matrix displayed and current message
+- Add Text App values to one React context, activeFont, activeMessage + any others
 - Debounce message input a little
 - Use reactQuery or similar to prevent repeat api calls when deleting etc.
 

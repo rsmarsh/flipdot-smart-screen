@@ -8,12 +8,7 @@ import styles from './Controls.module.css';
 import { useState } from 'react';
 import type { Fonts } from 'figlet';
 
-interface ControlsProps {
-  activeMatrix: DotMatrix;
-  setMatrix: (matrix: DotMatrix) => void;
-}
-
-const Controls = (props: ControlsProps) => {
+const Controls = () => {
   const [activeMessage, setActiveMessage] = useState('');
   const [passwordEntered, setPasswordEntered] = useState('');
   const [activeFont, setActiveFont] = useState<Fonts>('Banner');
@@ -29,12 +24,10 @@ const Controls = (props: ControlsProps) => {
         activeFont={activeFont}
         setActiveMessage={setActiveMessage}
         setPasswordEntered={setPasswordEntered}
-        setMatrix={props.setMatrix}
       />
-      <Randomise setMatrix={props.setMatrix} />
+      <Randomise />
       <SendToScreen
         activeMessage={activeMessage}
-        activeMatrix={props.activeMatrix}
         passwordEntered={passwordEntered}
         activeFont={activeFont}
         selectedSection={selectedSection}

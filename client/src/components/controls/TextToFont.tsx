@@ -11,12 +11,12 @@ import TextInput from '@/components/inputs/TextInput';
 import styles from './TextToFont.module.css';
 import type { Fonts } from 'figlet';
 import { getPreviewFromText } from '@/utils/network';
+import { useMatrix } from '@/contexts/matrix';
 
 interface ControlProps {
   activeMessage: string;
   passwordEntered: string;
   activeFont: Fonts;
-  setMatrix: (matrix: DotMatrix) => void;
   setActiveMessage: (message: string) => void;
   setPasswordEntered: (password: string) => void;
 }
@@ -24,6 +24,7 @@ interface ControlProps {
 const TextToFont = (props: ControlProps) => {
   // default to true, don't see any reason to turn it off yet
   const [liveUpdate, setLiveUpdate] = useState(true);
+  const { matrixDispatch } = useMatrix();
 
   // so that the preview immediately updates when the font changes
   useEffect(() => {
@@ -44,7 +45,7 @@ const TextToFont = (props: ControlProps) => {
 
   const submitMessage = async (newMessage: string, font: Fonts) => {
     if (!newMessage) {
-      props.setMatrix(emptyMatrix());
+      matrixDispatch({ type: 'emptyMatrix' });
       return;
     }
 
@@ -56,7 +57,7 @@ const TextToFont = (props: ControlProps) => {
 
     const matrixWithText = applyArrayToMatrix(preview.matrix);
     const centeredMatrix = centerAlignMatrix(matrixWithText);
-    props.setMatrix(centeredMatrix);
+    matrixDispatch({ type: 'setMatrix', payload: centeredMatrix });
   };
 
   return (

@@ -25,7 +25,7 @@ export const emptyMatrix = (size: SizeObject = SIZE) => {
 };
 
 /** Returns a matrix of random on/off values */
-export const randomMatrix = (size: SizeObject) => {
+export const randomMatrix = (size: SizeObject = SIZE) => {
   const matrix: DotMatrix = emptyMatrix(size);
 
   for (const row in matrix) {
