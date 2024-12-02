@@ -56,6 +56,15 @@ async function queryMessageHistory() {
   }
 }
 
+async function getActiveApp() {
+  // A query to select the most recent active app from the app table
+}
+
+async function setActiveApp(appName) {
+  // A query to add an active app entry to the app table
+  // Not sure yet if this should be a long list of "active app events", or update an "active" field on the next active app
+}
+
 module.exports = {
   insertMessage,
   queryMessageHistory

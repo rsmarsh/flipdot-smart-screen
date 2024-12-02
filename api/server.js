@@ -8,6 +8,7 @@ const API_PORT = 3001;
 const fs = require('fs');
 const SIZE = require('./src/size.js');
 
+const AppController = require('./src/apps/AppController.js');
 const { insertMessage, queryMessageHistory } = require('./src/dbComms.js');
 const {
   getEmptyMatrix,
@@ -172,6 +173,12 @@ app.get('/history', async (req, res) => {
 
 app.listen(API_PORT, () => {
   console.log('Express server listening');
+});
+
+// allows different apps to run, with the selected apps being regularly polled to display new updates
+// the current active app can be set via the api
+const appController = new AppController({
+  pollFrequency: 5000
 });
 
 function saveFont(fontName, message) {
