@@ -72,67 +72,76 @@ app.post('/text/', (req, res) => {
   const invert = false;
 
   // specify a section if adding to only a partial part of the display
-  if (section) {
-    // find out at which section to apply the partial matrix onto the full matrix
-    const offsets = getOffsetPositions(section);
-
-    // limit the width to the total size of the selected section
-    fontOptions.width = offsets.endCol - offsets.startCol;
-
-    // Gets a matrix for the message without updating the display
-    const partialMatrixData = flipdot.getMatrixFromText(message, fontOptions);
-
-    const partialMatrixBooleanArray =
-      convertAsciiToBooleanMatrix(partialMatrixData);
-
-    // the current matrix with the targeted section wiped
-    const preparedMatrix = getPartiallyCleanedMatrix(section, currentMatrix);
-
-    ////////////// FEATURE DISABLED FOR NOW - section lines didn't look good /////////////////
-    // const quarterSections = [
-    //   'topleft',
-    //   'topright',
-    //   'bottomleft',
-    //   'bottomright'
-    // ];
-    // const halfSections = ['top', 'bottom'];
-    //
-    // draws the lines between the sections on the matrix depending on the section chosen by the user,
-    // this may have no effect the second time on the same type of divide, but it doesn't hurt to reapply
-    // let dividedMatrix;
-    // if (quarterSections.includes(section)) {
-    //   dividedMatrix = getQuarterSectionedMatrix();
-    // } else if (halfSections.includes(section)) {
-    //   dividedMatrix = getHalfSectionedMatrix();
-    // } else {
-    //   // drawing full screen, no need to draw any divided
-    //   dividedMatrix = preparedMatrix;
-    // }
-    // const sectionedMatrix = combineTwoMatrix(preparedMatrix, dividedMatrix);
-
-    // then append the new matrix data to the cleaned one
-    const combinedMatrix = combineTwoMatrix(
-      preparedMatrix,
-      partialMatrixBooleanArray,
-      { startCol: offsets.startCol, startRow: offsets.startRow }
-    );
-
-    // TODO, confirm this as working, it was using flipdot.send(combinedMatrix) before
-    flipdot.showMatrix(combinedMatrix);
-
-    // Update the most latest displayed matrix
-    currentMatrix = combinedMatrix;
-
-    if (process.env.NODE_ENV.trim() === 'development') {
-      logMatrix(currentMatrix);
-    }
-
-    res.send(`Displaying a combined matrix`);
-  } else {
+  if (!section) {
     flipdot.showText(message, fontOptions);
 
     res.send(`Displaying "${message}" using "${font}" font`);
   }
+  // find out at which section to apply the partial matrix onto the full matrix
+  const offsets = getOffsetPositions(section);
+
+  // TODO: probably always true unless corner sections make a comeback
+  const horizontallyCentered = true;
+
+  // limit the width to the total size of the selected section
+  fontOptions.width = offsets.endCol - offsets.startCol;
+
+  // Gets a matrix for the message without updating the display
+  const partialMatrixData = flipdot.getMatrixFromText(message, fontOptions);
+
+  const partialMatrixBooleanArray =
+    convertAsciiToBooleanMatrix(partialMatrixData);
+
+  // the current matrix with the targeted section wiped
+  const preparedMatrix = getPartiallyCleanedMatrix(section, currentMatrix);
+
+  ////////////// FEATURE DISABLED FOR NOW - section lines didn't look good /////////////////
+  // const quarterSections = [
+  //   'topleft',
+  //   'topright',
+  //   'bottomleft',
+  //   'bottomright'
+  // ];
+  // const halfSections = ['top', 'bottom'];
+  //
+  // draws the lines between the sections on the matrix depending on the section chosen by the user,
+  // this may have no effect the second time on the same type of divide, but it doesn't hurt to reapply
+  // let dividedMatrix;
+  // if (quarterSections.includes(section)) {
+  //   dividedMatrix = getQuarterSectionedMatrix();
+  // } else if (halfSections.includes(section)) {
+  //   dividedMatrix = getHalfSectionedMatrix();
+  // } else {
+  //   // drawing full screen, no need to draw any divided
+  //   dividedMatrix = preparedMatrix;
+  // }
+  // const sectionedMatrix = combineTwoMatrix(preparedMatrix, dividedMatrix);
+
+  if (horizontallyCentered) {
+    const availableWidth = preparedMatrix[0].length;
+    const leftOffset = availableWidth - partialMatrixBooleanArray[0].length;
+    // how far to bump it to the right to horizontally align this section
+    offsets.startCol = Math.floor(leftOffset / 2);
+  }
+
+  // then append the new matrix data to the cleaned one
+  const combinedMatrix = combineTwoMatrix(
+    preparedMatrix,
+    partialMatrixBooleanArray,
+    { startCol: offsets.startCol, startRow: offsets.startRow }
+  );
+
+  // TODO, confirm this as working, it was using flipdot.send(combinedMatrix) before
+  flipdot.showMatrix(combinedMatrix);
+
+  // Update the most latest displayed matrix
+  currentMatrix = combinedMatrix;
+
+  if (process.env.NODE_ENV.trim() === 'development') {
+    logMatrix(currentMatrix);
+  }
+
+  res.send(`Updating section '${section}' with the message '${message}'`);
 
   // trigger a DB write with this message
   insertMessage(message, font);
@@ -140,7 +149,7 @@ app.post('/text/', (req, res) => {
 
 // allows a matrix to be sent directly to the api, as a true/false array of arrays
 app.post('/matrix/', (req, res) => {
-  const { matrix, password } = req.body;
+  const { matrix, password, message, font } = req.body;
 
   const apiPassword = process.env.API_PASSWORD;
 

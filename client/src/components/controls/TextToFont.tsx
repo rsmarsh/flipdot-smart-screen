@@ -56,6 +56,7 @@ const TextToFont = (props: ControlProps) => {
     });
 
     const matrixWithText = applyArrayToMatrix(preview.matrix);
+    // TODO receive the section here, so it can match up with the server-side sections
     const centeredMatrix = centerAlignMatrix(matrixWithText);
     matrixDispatch({ type: 'setMatrix', payload: centeredMatrix });
   };

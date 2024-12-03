@@ -1,4 +1,5 @@
 Features:
+- Add frontend figlet kerning options
 - give buttons a nicer loading state for requests
 - add a success/fail message after button load
 - Font vote up/down buttons
